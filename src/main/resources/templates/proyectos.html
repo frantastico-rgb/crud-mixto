@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Proyectos - Demo Mixto</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #D2691E 0%, #CD853F 25%, #DEB887 50%, #F4A460 75%, #DAA520 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-success { background-color: #2ecc71; color: white; }
+        .btn-warning { background-color: #f39c12; color: white; }
+        .btn-info { background-color: #17a2b8; color: white; }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 500;
+            padding: 15px 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f2f6;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge.completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge.in-progress {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Gestión de Proyectos</h1>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="/proyectos/crear" class="btn btn-success">➕ Nuevo Proyecto</a>
+            <a href="/proyectos/reportes" class="btn btn-warning">📊 Reportes</a>
+            <a href="/empleados" class="btn btn-info">👥 Ver Empleados</a>
+        </div>
+
+        <table th:if="${not #lists.isEmpty(proyectos)}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="proyecto : ${proyectos}">
+                    <td th:text="${proyecto.id}">ID</td>
+                    <td th:text="${proyecto.nombre}">Nombre</td>
+                    <td th:text="${proyecto.descripcion}">Descripción</td>
+                    <td>
+                        <span class="badge" 
+                              th:class="'badge ' + (${proyecto.completado} ? 'completed' : 'in-progress')" 
+                              th:text="${proyecto.completado} ? 'Completado' : 'En Progreso'">Estado</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/proyectos/editar/{id}(id=${proyecto.id})}" 
+                           class="btn btn-primary">✏️ Editar</a>
+                        <form th:action="@{/proyectos/eliminar/{id}(id=${proyecto.id})}" 
+                              method="post" style="display: inline-block;">
+                            <button type="submit" 
+                                    class="btn btn-warning" 
+                                    onclick="return confirm('¿Eliminar este proyecto?')">🗑️ Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${#lists.isEmpty(proyectos)}" style="text-align: center; padding: 40px;">
+            <h3>📋 No hay proyectos disponibles</h3>
+            <p>¡Comience creando su primer proyecto!</p>
+            <a href="/proyectos/crear" class="btn btn-success">➕ Crear Primer Proyecto</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Empleado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, button {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .nav-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .nav-button:hover {
+            background-color: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Empleado</h1>
+        <form th:action="@{/empleados/editar/{id}(id=${empleado.id})}" method="post">
+            <input type="hidden" name="_method" value="put">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" th:value="${empleado.nombre}" required>
+
+            <label for="cargo">Cargo:</label>
+            <input type="text" id="cargo" name="cargo" th:value="${empleado.cargo}" required>
+
+            <label for="salario">Salario:</label>
+            <input type="number" id="salario" name="salario" th:value="${empleado.salario}" step="0.01" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" th:value="${empleado.email}" required>
+
+            <button type="submit">Actualizar Empleado</button>
+        </form>
+        <a href="/empleados" class="nav-button">Volver a Lista</a>
+    </div>
+</body>
+</html>

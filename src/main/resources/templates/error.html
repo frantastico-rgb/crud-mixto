@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>⚠️ Error - DemoMixto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .error-container {
+            max-width: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .error-header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 40px;
+        }
+        
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .error-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .error-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .error-content {
+            padding: 40px;
+        }
+        
+        .error-message {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .error-message h3 {
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        
+        .error-message p {
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        .error-details {
+            background: #f1f2f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #2c3e50;
+            text-align: left;
+            word-break: break-all;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .help-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e1e8ed;
+            color: #6c757d;
+        }
+        
+        .help-section h4 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .help-list {
+            text-align: left;
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .help-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .help-list li:before {
+            content: '👉';
+            position: absolute;
+            left: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .error-container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .error-header, .error-content {
+                padding: 20px;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-header">
+            <div class="error-icon">⚠️</div>
+            <h1>¡Oops! Algo salió mal</h1>
+            <p>Se produjo un error en el sistema</p>
+        </div>
+        
+        <div class="error-content">
+            <div class="error-message">
+                <h3>💥 Error Detectado</h3>
+                <p th:if="${error}">
+                    <strong>Mensaje:</strong> <span th:text="${error}">Error desconocido</span>
+                </p>
+                <p th:unless="${error}">
+                    Se ha producido un error inesperado en el sistema. Nuestro equipo técnico ha sido notificado automáticamente.
+                </p>
+                
+                <div class="error-details" th:if="${path}">
+                    <strong>Ruta:</strong> <span th:text="${path}">Ruta no disponible</span>
+                </div>
+                
+                <div class="error-details" th:if="${timestamp}">
+                    <strong>Timestamp:</strong> <span th:text="${timestamp}">Timestamp no disponible</span>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    ← Volver Atrás
+                </a>
+                <a href="/proyectos" class="btn btn-primary">
+                    📋 Ver Proyectos
+                </a>
+                <a href="/empleados" class="btn btn-success">
+                    👥 Ver Empleados
+                </a>
+            </div>
+            
+            <div class="help-section">
+                <h4>🛟 ¿Necesitas ayuda?</h4>
+                <ul class="help-list">
+                    <li>Verifica que todos los campos requeridos estén completos</li>
+                    <li>Asegúrate de que las fechas estén en el formato correcto</li>
+                    <li>Revisa que no haya caracteres especiales en los campos de texto</li>
+                    <li>Si el error persiste, contacta al administrador del sistema</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-redirección después de 30 segundos
+        setTimeout(function() {
+            if (confirm('¿Deseas ser redirigido a la página principal?')) {
+                window.location.href = '/proyectos';
+            }
+        }, 30000);
+        
+        // Reportar error automáticamente (simulado)
+        console.error('Error reportado:', {
+            error: document.querySelector('[th\\:text="${error}"]')?.textContent || 'Error desconocido',
+            path: document.querySelector('[th\\:text="${path}"]')?.textContent || window.location.pathname,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent
+        });
+    </script>
+</body>
+</html>

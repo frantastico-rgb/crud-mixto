@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>✏️ Editar Proyecto - DemoMixto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .project-info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .form-section {
+            padding: 40px;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .form-grid {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fafbfc;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #e67e22;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            position: relative;
+            z-index: 3;
+            transform: scale(1.2);
+        }
+        
+        .checkbox-label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #d35400, #a04000);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(230, 126, 34, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            min-width: 140px;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(149, 165, 166, 0.3);
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            min-width: 140px;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.3);
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon::before {
+            content: attr(data-icon);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .input-icon .form-input {
+            padding-left: 45px;
+        }
+        
+        .required-mark {
+            color: #e74c3c;
+        }
+        
+        .help-text {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .current-value {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-style: italic;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header, .form-section {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✏️ Editar Proyecto</h1>
+            <p>Modifique los datos del proyecto en MongoDB</p>
+            <div class="project-info" th:if="${proyecto}">
+                <strong>📋 Proyecto:</strong> <span th:text="${proyecto.nombre}">Nombre del Proyecto</span><br>
+                <strong>🆔 ID:</strong> <span th:text="${proyecto.id}">ID del Proyecto</span>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <!-- Mostrar alertas si hay errores -->
+            <div th:if="${param.error}" class="alert alert-error">
+                <strong>⚠️ Error:</strong> <span th:text="${param.error[0]}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-error">
+                <strong>⚠️ Error:</strong> <span th:text="${error}"></span>
+            </div>
+            
+            <form th:action="@{/proyectos/editar/{id}(id=${proyecto.id})}" method="post" th:if="${proyecto}">
+                <input type="hidden" name="_method" value="put">
+                
+                <div class="form-grid">
+                    <!-- Nombre del proyecto -->
+                    <div class="form-group">
+                        <label for="nombre" class="form-label">
+                            📋 Nombre del Proyecto <span class="required-mark">*</span>
+                        </label>
+                        <div class="input-icon" data-icon="📋">
+                            <input type="text" 
+                                   id="nombre" 
+                                   name="nombre" 
+                                   class="form-input" 
+                                   th:value="${proyecto != null ? proyecto.nombre : ''}"
+                                   placeholder="Ej: Sistema de Gestión de Inventario"
+                                   required
+                                   maxlength="100">
+                        </div>
+                        <div class="help-text">Modifique el nombre del proyecto</div>
+                    </div>
+                    
+                    <!-- Descripción -->
+                    <div class="form-group">
+                        <label for="descripcion" class="form-label">
+                            📝 Descripción <span class="required-mark">*</span>
+                        </label>
+                        <textarea id="descripcion" 
+                                  name="descripcion" 
+                                  class="form-textarea" 
+                                  th:text="${proyecto != null ? proyecto.descripcion : ''}"
+                                  placeholder="Describa los objetivos, alcance y características principales del proyecto..."
+                                  required
+                                  maxlength="500"></textarea>
+                        <div class="help-text">Actualice la descripción del proyecto</div>
+                    </div>
+                    
+                    <!-- Empleado asignado -->
+                    <div class="form-group">
+                        <label for="empleadoId" class="form-label">
+                            👤 Empleado Asignado
+                        </label>
+                        <select id="empleadoId" 
+                                name="empleadoId" 
+                                class="form-select">
+                            <option value="">Sin asignar</option>
+                            <option th:each="empleado : ${empleados}" 
+                                    th:value="${empleado.id}" 
+                                    th:text="${empleado.nombre} + ' - ' + ${empleado.cargo}"
+                                    th:selected="${proyecto.empleadoId != null and proyecto.empleadoId == empleado.id}">
+                                Empleado - Cargo
+                            </option>
+                        </select>
+                        <div class="help-text">Cambie el empleado responsable del proyecto</div>
+                        <div class="current-value" th:if="${proyecto.empleadoId}">
+                            <strong>Actual:</strong> ID <span th:text="${proyecto.empleadoId}"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Fecha de inicio -->
+                    <div class="form-group">
+                        <label for="fechaInicio" class="form-label">
+                            📅 Fecha de Inicio <span class="required-mark">*</span>
+                        </label>
+                        <input type="date" 
+                               id="fechaInicio" 
+                               name="fechaInicio" 
+                               class="form-input" 
+                               th:value="${proyecto != null and proyecto.fechaInicio != null ? #temporals.format(proyecto.fechaInicio, 'yyyy-MM-dd') : ''}"
+                               required>
+                        <div class="help-text">Modifique la fecha de inicio del proyecto</div>
+                    </div>
+                    
+                    <!-- Estado de completado -->
+                    <div class="form-group">
+                        <label class="form-label">📊 Estado del Proyecto</label>
+                        <div class="checkbox-group">
+                            <input type="hidden" name="completado" value="false">
+                            <input type="checkbox" 
+                                   id="completado" 
+                                   name="completado" 
+                                   class="checkbox-input"
+                                   value="true"
+                                   th:checked="${proyecto != null and proyecto.completado}">
+                            <label for="completado" class="checkbox-label">
+                                ✅ Marcar como completado
+                            </label>
+                        </div>
+                        <div class="help-text">Cambie el estado del proyecto</div>
+                        <div class="current-value" th:if="${proyecto != null}">
+                            <strong>Estado actual:</strong> 
+                            <span th:if="${proyecto.completado}" style="color: #27ae60;">✅ Completado</span>
+                            <span th:unless="${proyecto.completado}" style="color: #f39c12;">🔄 En Progreso</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Información de tareas -->
+                    <div class="form-group" th:if="${proyecto.tareas != null}">
+                        <label class="form-label">📝 Información de Tareas</label>
+                        <div class="current-value">
+                            <strong>Tareas totales:</strong> <span th:text="${proyecto.totalTareas}">0</span><br>
+                            <strong>Tareas completadas:</strong> <span th:text="${proyecto.tareasCompletadas}">0</span>
+                        </div>
+                        <div class="help-text">La gestión detallada de tareas se realiza desde la vista principal</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="/proyectos" class="btn btn-secondary">
+                        ← Cancelar
+                    </a>
+                    <button type="button" class="btn btn-danger" onclick="eliminarProyecto()">
+                        🗑️ Eliminar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        ✅ Actualizar Proyecto
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Mensaje si no se encuentra el proyecto -->
+            <div th:unless="${proyecto}" class="alert alert-error">
+                <strong>⚠️ Error:</strong> No se encontró el proyecto solicitado.
+                <div style="margin-top: 15px;">
+                    <a href="/proyectos" class="btn btn-secondary">← Volver a la Lista</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-focus en el primer campo
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('nombre').focus();
+        });
+        
+        // Validación de formulario
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const nombre = document.getElementById('nombre').value.trim();
+            const descripcion = document.getElementById('descripcion').value.trim();
+            
+            if (nombre.length < 3) {
+                e.preventDefault();
+                alert('El nombre del proyecto debe tener al menos 3 caracteres.');
+                document.getElementById('nombre').focus();
+                return;
+            }
+            
+            if (descripcion.length < 10) {
+                e.preventDefault();
+                alert('La descripción debe tener al menos 10 caracteres.');
+                document.getElementById('descripcion').focus();
+                return;
+            }
+        });
+        
+        // Función para eliminar proyecto
+        function eliminarProyecto() {
+            const projectName = document.getElementById('nombre').value || 'este proyecto';
+            if (confirm('¿Está seguro de que desea eliminar ' + projectName + '?\n\nEsta acción no se puede deshacer.')) {
+                // Crear formulario para eliminar
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/proyectos/eliminar/' + document.querySelector('input[name="_method"]').closest('form').action.split('/').pop();
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>

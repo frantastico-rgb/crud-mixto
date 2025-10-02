@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>📊 Reportes de Proyectos - DemoMixto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #D2691E 0%, #CD853F 25%, #DEB887 50%, #F4A460 75%, #DAA520 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-top: 4px solid;
+        }
+        
+        .stat-card.projects { border-top-color: #3498db; }
+        .stat-card.progress { border-top-color: #2ecc71; }
+        .stat-card.pending { border-top-color: #f39c12; }
+        .stat-card.completed { border-top-color: #e74c3c; }
+        
+        .stat-content {
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card.projects .stat-number { color: #3498db; }
+        .stat-card.progress .stat-number { color: #2ecc71; }
+        .stat-card.pending .stat-number { color: #f39c12; }
+        .stat-card.completed .stat-number { color: #e74c3c; }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .projects-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .project-header {
+            padding: 20px;
+            border-bottom: 1px solid #f1f2f6;
+        }
+        
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .project-description {
+            color: #7f8c8d;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .project-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-en_progreso {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status-completado {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #00b894;
+        }
+        
+        .status-pendiente {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #e17055;
+        }
+        
+        .project-employee {
+            color: #6c5ce7;
+            font-weight: 500;
+        }
+        
+        .project-body {
+            padding: 20px;
+        }
+        
+        .task-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .task-summary h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .progress-bar {
+            background: #ecf0f1;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894, #00cec9);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.9rem;
+            color: #636e72;
+            text-align: center;
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f2f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-name {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .task-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .task-completo {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .task-en_progreso {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .task-pendiente {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .actions-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #636e72, #2d3436);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .system-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .info-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .info-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #636e72;
+        }
+        
+        .empty-state p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Reportes y Estadísticas de Proyectos</h1>
+            <p>Panel de control y análisis de proyectos del sistema</p>
+        </div>
+        
+        <div class="content">
+            <!-- Estadísticas generales -->
+            <div class="stats-grid">
+                <div class="stat-card projects">
+                    <div class="stat-content">
+                        <div class="stat-number" th:text="${totalProyectos}">0</div>
+                        <div class="stat-label">📁 Total Proyectos</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card progress">
+                    <div class="stat-content">
+                        <div class="stat-number" th:text="${proyectosEnProgreso}">0</div>
+                        <div class="stat-label">🚀 En Progreso</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card completed">
+                    <div class="stat-content">
+                        <div class="stat-number" th:text="${proyectosCompletados}">0</div>
+                        <div class="stat-label">✅ Completados</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card pending">
+                    <div class="stat-content">
+                        <div class="stat-number" th:text="${proyectosPendientes}">0</div>
+                        <div class="stat-label">⏳ Pendientes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista detallada de proyectos -->
+            <div class="section">
+                <h2 class="section-title">📋 Detalle de Proyectos</h2>
+                
+                <div th:if="${proyectos.isEmpty()}" class="empty-state">
+                    <h3>📂 No hay proyectos registrados</h3>
+                    <p>Comienza creando tu primer proyecto para ver estadísticas detalladas aquí.</p>
+                    <a href="/proyectos/crear" class="btn btn-primary">➕ Crear Primer Proyecto</a>
+                </div>
+                
+                <div class="projects-grid" th:unless="${proyectos.isEmpty()}">
+                    <div class="project-card" th:each="proyecto : ${proyectos}">
+                        <div class="project-header">
+                            <div class="project-title" th:text="${proyecto.nombre}">Nombre del Proyecto</div>
+                            <div class="project-description" th:text="${proyecto.descripcion}">Descripción del proyecto</div>
+                            
+                            <div class="project-meta">
+                                <span class="project-status" 
+                                      th:class="'project-status status-' + ${proyecto.completado ? 'completado' : 'activo'}"
+                                      th:text="${proyecto.completado ? 'Completado' : 'En Progreso'}">Estado</span>
+                                
+                                <span class="project-employee" 
+                                      th:text="'Empleado ID: ' + ${proyecto.empleadoId}">Empleado</span>
+                            </div>
+                        </div>
+                        
+                        <div class="project-body">
+                            <div class="task-summary">
+                                <h4>📊 Resumen de Tareas</h4>
+                                
+                                <div th:if="${proyecto.totalTareas > 0}">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" th:style="'width: ' + ${proyecto.totalTareas > 0 ? (proyecto.tareasCompletadas * 100.0 / proyecto.totalTareas) : 0} + '%'"></div>
+                                    </div>
+                                    
+                                    <div class="progress-text">
+                                        <span th:text="${proyecto.tareasCompletadas}">0</span> de 
+                                        <span th:text="${proyecto.totalTareas}">0</span> tareas completadas
+                                        (<span th:text="${proyecto.totalTareas > 0 ? #numbers.formatDecimal((proyecto.tareasCompletadas * 100.0 / proyecto.totalTareas), 1, 0) : 0}">0</span>%)
+                                    </div>
+                                </div>
+                                
+                                <div th:if="${proyecto.totalTareas == 0}">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0%"></div>
+                                    </div>
+                                    <div class="progress-text">Sin tareas asignadas</div>
+                                </div>
+                            </div>
+                            
+                            <div th:if="${proyecto.tareas != null and !proyecto.tareas.isEmpty()}">
+                                <h4 style="color: #2c3e50; margin-bottom: 10px;">📝 Lista de Tareas</h4>
+                                <ul class="task-list">
+                                    <li class="task-item" th:each="tarea : ${proyecto.tareas}">
+                                        <span class="task-name" th:text="${tarea.descripcion}">Descripción de la tarea</span>
+                                        <span class="task-status" 
+                                              th:class="'task-status task-' + ${tarea.estado}"
+                                              th:text="${tarea.estado}">Estado</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Acciones disponibles -->
+            <div class="section">
+                <h2 class="section-title">⚙️ Acciones Disponibles</h2>
+                <div class="actions-section">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">Exportar y Gestionar Datos</h3>
+                    <div class="action-buttons">
+                        <a href="/proyectos/exportar/excel" class="btn btn-primary">
+                            📊 Exportar Excel
+                        </a>
+                        <a href="/proyectos/estadisticas" class="btn btn-info" target="_blank">
+                            📈 API Estadísticas
+                        </a>
+                        <a href="/empleados" class="btn btn-primary">
+                            👥 Ver Empleados
+                        </a>
+                        <a href="/proyectos/crear" class="btn btn-warning">
+                            ➕ Nuevo Proyecto
+                        </a>
+                        <a href="/proyectos" class="btn btn-secondary">
+                            ← Volver a Proyectos
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Información del sistema -->
+            <div class="system-info">
+                <h2 class="section-title">ℹ️ Información del Sistema</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">🗄️</div>
+                        <div class="info-title">Base de Datos</div>
+                        <div class="info-description">MongoDB Atlas (Proyectos)<br>MySQL (Empleados)</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">🚀</div>
+                        <div class="info-title">Framework</div>
+                        <div class="info-description">Spring Boot 3.5.6<br>Arquitectura Híbrida</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">📊</div>
+                        <div class="info-title">Reportes</div>
+                        <div class="info-description">Exportación Excel<br>API REST JSON</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">🔒</div>
+                        <div class="info-title">Seguridad</div>
+                        <div class="info-description">Spring Security<br>Autenticación Básica</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>
