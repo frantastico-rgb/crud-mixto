@@ -1,0 +1,260 @@
+# 🐳 Docker Compose para DemoMixto - Stack Completo
+# Spring Boot + MySQL + MongoDB + Herramientas de Administración
+
+version: '3.8'
+
+# ============================================================================
+# SERVICIOS PRINCIPALES
+# ============================================================================
+services:
+  
+  # 🚀 Aplicación DemoMixto (Spring Boot)
+  demomixto-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: demomixto-app
+    hostname: demomixto-app
+    ports:
+      - "8080:8080"    # Puerto principal de la aplicación
+      - "8090:8090"    # Puerto para actuator (opcional)
+    environment:
+      # Profile específico para Docker
+      - SPRING_PROFILES_ACTIVE=docker
+      
+      # Configuración MySQL
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/empresa?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=demomixto
+      - SPRING_DATASOURCE_PASSWORD=DemoMixto2025!
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=false
+      
+      # Configuración MongoDB
+      - SPRING_DATA_MONGODB_HOST=mongo-db
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=empresa
+      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_DATA_MONGODB_USERNAME=demomixto
+      - SPRING_DATA_MONGODB_PASSWORD=DemoMixto2025!
+      
+      # Configuración de logging
+      - LOGGING_LEVEL_COM_MIAPLICACION=DEBUG
+      - LOGGING_PATTERN_CONSOLE=%d{yyyy-MM-dd HH:mm:ss} - %msg%n
+      
+      # Configuración JVM
+      - JAVA_OPTS=-Xmx512m -Xms256m
+      
+    volumes:
+      - app-logs:/app/logs
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      mongo-db:
+        condition: service_started
+    networks:
+      - demomixto-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # 🗄️ MySQL Database
+  mysql-db:
+    image: mysql:8.0
+    container_name: demomixto-mysql
+    hostname: mysql-db
+    ports:
+      - "3306:3306"
+    environment:
+      # Configuración de seguridad
+      - MYSQL_ROOT_PASSWORD=RootPassword2025!
+      - MYSQL_DATABASE=empresa
+      - MYSQL_USER=demomixto
+      - MYSQL_PASSWORD=DemoMixto2025!
+      
+      # Configuración de charset
+      - MYSQL_CHARACTER_SET_SERVER=utf8mb4
+      - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
+      
+      # Configuración de timezone
+      - TZ=America/Bogota
+      
+    volumes:
+      # Persistencia de datos
+      - mysql-data:/var/lib/mysql
+      
+      # Scripts de inicialización
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      
+      # Configuración personalizada
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      
+    networks:
+      - demomixto-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "demomixto", "-pDemoMixto2025!"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # 🍃 MongoDB Database
+  mongo-db:
+    image: mongo:7.0
+    container_name: demomixto-mongo
+    hostname: mongo-db
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=AdminPassword2025!
+      - MONGO_INITDB_DATABASE=empresa
+      - TZ=America/Bogota
+    volumes:
+      # Persistencia de datos
+      - mongo-data:/data/db
+      - mongo-config:/data/configdb
+      
+      # Scripts de inicialización
+      - ./docker/mongo/init:/docker-entrypoint-initdb.d
+      
+    networks:
+      - demomixto-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+# ============================================================================
+# HERRAMIENTAS DE ADMINISTRACIÓN Y MONITOREO
+# ============================================================================
+
+  # 🔧 Adminer - Administración MySQL
+  adminer:
+    image: adminer:4.8.1
+    container_name: demomixto-adminer
+    hostname: adminer
+    ports:
+      - "8081:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=mysql-db
+      - ADMINER_DESIGN=pepa-linha
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    networks:
+      - demomixto-network
+    restart: unless-stopped
+
+  # 🍃 Mongo Express - Administración MongoDB
+  mongo-express:
+    image: mongo-express:1.0.0
+    container_name: demomixto-mongo-express
+    hostname: mongo-express
+    ports:
+      - "8082:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo-db
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=AdminPassword2025!
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+    depends_on:
+      - mongo-db
+    networks:
+      - demomixto-network
+    restart: unless-stopped
+
+  # 📊 Prometheus - Métricas (Opcional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: demomixto-prometheus
+    hostname: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - demomixto-app
+    networks:
+      - demomixto-network
+    restart: unless-stopped
+
+  # 📈 Grafana - Dashboard (Opcional)  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: demomixto-grafana
+    hostname: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    networks:
+      - demomixto-network
+    restart: unless-stopped
+
+# ============================================================================
+# VOLÚMENES PERSISTENTES
+# ============================================================================
+volumes:
+  # Base de datos
+  mysql-data:
+    driver: local
+    name: demomixto_mysql_data
+  mongo-data:
+    driver: local
+    name: demomixto_mongo_data
+  mongo-config:
+    driver: local
+    name: demomixto_mongo_config
+    
+  # Aplicación
+  app-logs:
+    driver: local
+    name: demomixto_app_logs
+    
+  # Monitoreo
+  prometheus-data:
+    driver: local
+    name: demomixto_prometheus_data
+  grafana-data:
+    driver: local
+    name: demomixto_grafana_data
+
+# ============================================================================
+# REDES
+# ============================================================================
+networks:
+  demomixto-network:
+    driver: bridge
+    name: demomixto_network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16

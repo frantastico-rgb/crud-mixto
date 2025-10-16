@@ -1,0 +1,1303 @@
+{
+	"info": {
+		"_postman_id": "demomixto-api-collection",
+		"name": "DemoMixto API REST Collection",
+		"description": "Colección completa para probar todos los endpoints REST de la aplicación DemoMixto.\n\n## Configuración Previa:\n1. Asegúrate de que la aplicación esté corriendo en localhost:8080\n2. Usa las credenciales: admin/admin para empleados\n3. Los proyectos no requieren autenticación\n\n## Variables de entorno:\n- `base_url`: http://localhost:8080\n- `empleado_id`: ID del empleado para pruebas\n- `proyecto_id`: ID del proyecto para pruebas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "demomixto-exporter"
+	},
+	"item": [
+		{
+			"name": "👨‍💼 EMPLEADOS API",
+			"item": [
+				{
+					"name": "📋 CRUD Empleados",
+					"item": [
+						{
+							"name": "GET - Listar todos los empleados",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados"
+									]
+								},
+								"description": "Obtiene la lista completa de empleados en formato JSON estructurado."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "GET - Obtener empleado por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"1"
+									]
+								},
+								"description": "Obtiene un empleado específico por su ID."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "POST - Crear nuevo empleado",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"María González\",\n  \"cargo\": \"Frontend Developer\",\n  \"salario\": 48000,\n  \"email\": \"maria.gonzalez@example.com\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/empleados",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados"
+									]
+								},
+								"description": "Crea un nuevo empleado con los datos proporcionados."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "PUT - Actualizar empleado",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"María González López\",\n  \"cargo\": \"Senior Frontend Developer\",\n  \"salario\": 58000,\n  \"email\": \"maria.gonzalez.lopez@example.com\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/empleados/{{empleado_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"{{empleado_id}}"
+									]
+								},
+								"description": "Actualiza completamente los datos de un empleado existente."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "DELETE - Eliminar empleado",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados/{{empleado_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"{{empleado_id}}"
+									]
+								},
+								"description": "Elimina un empleado por su ID."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "🔍 Búsquedas Empleados",
+					"item": [
+						{
+							"name": "GET - Búsqueda general",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados/buscar?termino=developer",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"buscar"
+									],
+									"query": [
+										{
+											"key": "termino",
+											"value": "developer"
+										}
+									]
+								},
+								"description": "Búsqueda general de empleados por término (busca en nombre y cargo)."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "GET - Buscar por nombre",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados/buscar-nombre?nombre=Juan",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"buscar-nombre"
+									],
+									"query": [
+										{
+											"key": "nombre",
+											"value": "Juan"
+										}
+									]
+								},
+								"description": "Búsqueda específica por nombre del empleado."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "GET - Buscar por cargo",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados/buscar-cargo?cargo=Desarrollador",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"buscar-cargo"
+									],
+									"query": [
+										{
+											"key": "cargo",
+											"value": "Desarrollador"
+										}
+									]
+								},
+								"description": "Búsqueda específica por cargo del empleado."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "GET - Buscar por rango salarial",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados/buscar-salario?min=40000&max=60000",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"buscar-salario"
+									],
+									"query": [
+										{
+											"key": "min",
+											"value": "40000"
+										},
+										{
+											"key": "max",
+											"value": "60000"
+										}
+									]
+								},
+								"description": "Búsqueda de empleados por rango de salario mínimo y máximo."
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "🚀 PROYECTOS API",
+			"item": [
+				{
+					"name": "📋 CRUD Proyectos",
+					"item": [
+						{
+							"name": "GET - Listar todos los proyectos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/proyectos",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos"
+									]
+								},
+								"description": "Obtiene la lista completa de proyectos en formato JSON estructurado."
+							}
+						},
+						{
+							"name": "GET - Listar proyectos con filtros",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/proyectos?empleadoId=1&completado=false",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos"
+									],
+									"query": [
+										{
+											"key": "empleadoId",
+											"value": "1",
+											"description": "Filtrar por ID de empleado"
+										},
+										{
+											"key": "completado",
+											"value": "false",
+											"description": "Filtrar por estado (true/false)"
+										},
+										{
+											"key": "busqueda",
+											"value": "API",
+											"description": "Búsqueda por nombre",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene proyectos aplicando filtros opcionales por empleado, estado o término de búsqueda."
+							}
+						},
+						{
+							"name": "GET - Obtener proyecto por ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{proyecto_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{proyecto_id}}"
+									]
+								},
+								"description": "Obtiene un proyecto específico por su ID de MongoDB."
+							}
+						},
+						{
+							"name": "POST - Crear nuevo proyecto",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Sistema de Gestión\",\n  \"descripcion\": \"Sistema completo de gestión empresarial con módulos de inventario, ventas y reportes\",\n  \"empleadoId\": 1,\n  \"fechaInicio\": \"2025-01-15\",\n  \"completado\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/proyectos",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos"
+									]
+								},
+								"description": "Crea un nuevo proyecto con los datos proporcionados."
+							}
+						},
+						{
+							"name": "PUT - Actualizar proyecto",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Sistema de Gestión Actualizado\",\n  \"descripcion\": \"Sistema completo de gestión empresarial con nuevos módulos de BI y analytics\",\n  \"empleadoId\": 2,\n  \"fechaInicio\": \"2025-01-20\",\n  \"completado\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{proyecto_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{proyecto_id}}"
+									]
+								},
+								"description": "Actualiza completamente los datos de un proyecto existente."
+							}
+						},
+						{
+							"name": "DELETE - Eliminar proyecto",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{proyecto_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{proyecto_id}}"
+									]
+								},
+								"description": "Elimina un proyecto por su ID."
+							}
+						}
+					]
+				},
+				{
+					"name": "📝 Gestión de Tareas",
+					"item": [
+						{
+							"name": "POST - Agregar tarea al proyecto",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Implementar API REST\",\n  \"estado\": \"pendiente\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{proyecto_id}}/tareas",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{proyecto_id}}",
+										"tareas"
+									]
+								},
+								"description": "Agrega una nueva tarea a un proyecto existente."
+							}
+						},
+						{
+							"name": "PUT - Actualizar tarea específica",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Implementar API REST y documentación\",\n  \"estado\": \"completo\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{proyecto_id}}/tareas/0",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{proyecto_id}}",
+										"tareas",
+										"0"
+									]
+								},
+								"description": "Actualiza una tarea específica por su índice en el array de tareas del proyecto."
+							}
+						},
+						{
+							"name": "DELETE - Eliminar tarea específica",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{proyecto_id}}/tareas/0",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{proyecto_id}}",
+										"tareas",
+										"0"
+									]
+								},
+								"description": "Elimina una tarea específica por su índice en el array de tareas del proyecto."
+							}
+						}
+					]
+				},
+				{
+					"name": "📊 Estadísticas",
+					"item": [
+						{
+							"name": "GET - Estadísticas generales",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/estadisticas",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"estadisticas"
+									]
+								},
+								"description": "Obtiene estadísticas generales de proyectos y tareas (totales, completados, pendientes)."
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "🧪 CASOS DE PRUEBA",
+			"item": [
+				{
+					"name": "🔄 Flujo Completo - Empleado",
+					"item": [
+						{
+							"name": "1. Crear empleado de prueba",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Extraer ID del empleado creado para usar en siguientes requests",
+											"if (pm.response.code === 200) {",
+											"    const response = pm.response.json();",
+											"    if (response.success && response.data && response.data.id) {",
+											"        pm.environment.set('test_empleado_id', response.data.id);",
+											"        pm.test('Empleado creado exitosamente', function() {",
+											"            pm.expect(response.success).to.be.true;",
+											"        });",
+											"    }",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Test User Postman\",\n  \"cargo\": \"QA Tester\",\n  \"salario\": 45000,\n  \"email\": \"test.postman@example.com\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/empleados",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados"
+									]
+								}
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "2. Obtener empleado creado",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Empleado encontrado', function() {",
+											"    const response = pm.response.json();",
+											"    pm.expect(response.success).to.be.true;",
+											"    pm.expect(response.data.nombre).to.eql('Test User Postman');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados/{{test_empleado_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"{{test_empleado_id}}"
+									]
+								}
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "3. Actualizar empleado",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Empleado actualizado exitosamente', function() {",
+											"    const response = pm.response.json();",
+											"    pm.expect(response.success).to.be.true;",
+											"    pm.expect(response.data.cargo).to.eql('Senior QA Tester');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Test User Postman Updated\",\n  \"cargo\": \"Senior QA Tester\",\n  \"salario\": 55000,\n  \"email\": \"test.postman.updated@example.com\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/empleados/{{test_empleado_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"{{test_empleado_id}}"
+									]
+								}
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						},
+						{
+							"name": "4. Eliminar empleado",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Empleado eliminado exitosamente', function() {",
+											"    const response = pm.response.json();",
+											"    pm.expect(response.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/empleados/{{test_empleado_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"empleados",
+										"{{test_empleado_id}}"
+									]
+								}
+							},
+							"auth": {
+								"type": "basic",
+								"basic": [
+									{
+										"key": "username",
+										"value": "admin",
+										"type": "string"
+									},
+									{
+										"key": "password",
+										"value": "admin",
+										"type": "string"
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "🔄 Flujo Completo - Proyecto",
+					"item": [
+						{
+							"name": "1. Crear proyecto de prueba",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Extraer ID del proyecto creado",
+											"if (pm.response.code === 200) {",
+											"    const response = pm.response.json();",
+											"    if (response.success && response.data && response.data.id) {",
+											"        pm.environment.set('test_proyecto_id', response.data.id);",
+											"        pm.test('Proyecto creado exitosamente', function() {",
+											"            pm.expect(response.success).to.be.true;",
+											"        });",
+											"    }",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Proyecto Test Postman\",\n  \"descripcion\": \"Proyecto de prueba creado desde Postman para validar la API\",\n  \"empleadoId\": 1,\n  \"fechaInicio\": \"2025-01-15\",\n  \"completado\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/proyectos",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos"
+									]
+								}
+							}
+						},
+						{
+							"name": "2. Agregar tarea al proyecto",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Tarea agregada exitosamente', function() {",
+											"    const response = pm.response.json();",
+											"    pm.expect(response.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Validar API endpoints\",\n  \"estado\": \"pendiente\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{test_proyecto_id}}/tareas",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{test_proyecto_id}}",
+										"tareas"
+									]
+								}
+							}
+						},
+						{
+							"name": "3. Actualizar tarea",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Tarea actualizada exitosamente', function() {",
+											"    const response = pm.response.json();",
+											"    pm.expect(response.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Validar API endpoints - Completado\",\n  \"estado\": \"completo\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{test_proyecto_id}}/tareas/0",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{test_proyecto_id}}",
+										"tareas",
+										"0"
+									]
+								}
+							}
+						},
+						{
+							"name": "4. Completar proyecto",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Proyecto completado exitosamente', function() {",
+											"    const response = pm.response.json();",
+											"    pm.expect(response.success).to.be.true;",
+											"    pm.expect(response.data.completado).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Proyecto Test Postman - COMPLETADO\",\n  \"descripcion\": \"Proyecto de prueba completado exitosamente\",\n  \"empleadoId\": 1,\n  \"fechaInicio\": \"2025-01-15\",\n  \"completado\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{test_proyecto_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{test_proyecto_id}}"
+									]
+								}
+							}
+						},
+						{
+							"name": "5. Eliminar proyecto",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Proyecto eliminado exitosamente', function() {",
+											"    const response = pm.response.json();",
+											"    pm.expect(response.success).to.be.true;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/proyectos/{{test_proyecto_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"proyectos",
+										"{{test_proyecto_id}}"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "❌ CASOS DE ERROR",
+			"item": [
+				{
+					"name": "Empleado - Crear sin datos requeridos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Error validación - nombre requerido', function() {",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cargo\": \"Developer\",\n  \"salario\": 50000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/empleados",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"empleados"
+							]
+						}
+					},
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "username",
+								"value": "admin",
+								"type": "string"
+							},
+							{
+								"key": "password",
+								"value": "admin",
+								"type": "string"
+							}
+						]
+					}
+				},
+				{
+					"name": "Empleado - Obtener ID inexistente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Error 404 - empleado no encontrado', function() {",
+									"    pm.expect(pm.response.code).to.be.oneOf([404]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/empleados/99999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"empleados",
+								"99999"
+							]
+						}
+					},
+					"auth": {
+						"type": "basic",
+						"basic": [
+							{
+								"key": "username",
+								"value": "admin",
+								"type": "string"
+							},
+							{
+								"key": "password",
+								"value": "admin",
+								"type": "string"
+							}
+						]
+					}
+				},
+				{
+					"name": "Proyecto - Crear sin nombre",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Error validación - nombre proyecto requerido', function() {",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"descripcion\": \"Proyecto sin nombre\",\n  \"empleadoId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/proyectos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"proyectos"
+							]
+						}
+					}
+				},
+				{
+					"name": "Empleados - Sin autenticación",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Error 401 - sin autenticación', function() {",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/empleados",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"empleados"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Test global para verificar formato de respuesta JSON",
+					"pm.test('Response is JSON', function() {",
+					"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+					"});",
+					"",
+					"// Test global para verificar estructura de respuesta",
+					"if (pm.response.code !== 401 && pm.response.code !== 403) {",
+					"    pm.test('Response has standard structure', function() {",
+					"        const response = pm.response.json();",
+					"        pm.expect(response).to.have.property('success');",
+					"        pm.expect(response).to.have.property('message');",
+					"        pm.expect(response).to.have.property('data');",
+					"    });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "empleado_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "proyecto_id",
+			"value": "68d74c896283a9a744f23415",
+			"type": "string"
+		}
+	]
+}

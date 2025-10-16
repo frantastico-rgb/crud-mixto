@@ -1,0 +1,257 @@
+# 🐳 .dockerignore para DemoMixto
+# Optimiza el contexto de Docker excluyendo archivos innecesarios
+
+# ============================================================================
+# ARCHIVOS DE BUILD Y DEPENDENCIAS
+# ============================================================================
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle (si se usa en el futuro)
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ============================================================================
+# ARCHIVOS DE IDE Y EDITORES
+# ============================================================================
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# ============================================================================
+# ARCHIVOS DEL SISTEMA OPERATIVO
+# ============================================================================
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================================================
+# ARCHIVOS DE VERSION CONTROL
+# ============================================================================
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+.gitkeep
+
+# ============================================================================
+# LOGS Y ARCHIVOS TEMPORALES
+# ============================================================================
+*.log
+*.log.*
+logs/
+temp/
+tmp/
+*.pid
+*.seed
+*.pid.lock
+
+# Spring Boot
+spring.log
+application*.log
+
+# ============================================================================
+# ARCHIVOS DE DOCKER
+# ============================================================================
+# Evitar recursión de archivos Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Archivos de construcción Docker
+.docker/
+
+# ============================================================================
+# ARCHIVOS DE TESTING
+# ============================================================================
+# JUnit
+*.launch
+.metadata
+.recommenders
+
+# Coverage reports
+jacoco.exec
+jacoco-it.exec
+*.exec
+
+# ============================================================================
+# ARCHIVOS DE DOCUMENTACIÓN (OPCIONAL)
+# ============================================================================
+# Mantener solo documentación esencial
+README*.md
+docs/
+*.md
+!README.md
+
+# ============================================================================
+# ARCHIVOS DE CONFIGURACIÓN LOCAL
+# ============================================================================
+# Variables de entorno locales
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Configuraciones locales de IDE
+*.launch
+.settings/
+.vscode/
+.idea/
+
+# ============================================================================
+# ARCHIVOS DE BACKUP Y TEMPORALES
+# ============================================================================
+*.bak
+*.swp
+*.swo
+*~
+*.orig
+*.rej
+
+# ============================================================================
+# ARCHIVOS DE NODEJS (SI SE AGREGAN FRONTEND TOOLS)
+# ============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================================================
+# ARCHIVOS DE SEGURIDAD
+# ============================================================================
+# Claves y certificados
+*.key
+*.pem
+*.p12
+*.jks
+secrets/
+certificates/
+
+# ============================================================================
+# ARCHIVOS DE BASE DE DATOS LOCAL
+# ============================================================================
+# H2 Database files (si se usa para testing)
+*.mv.db
+*.trace.db
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# ============================================================================
+# ARCHIVOS DE MONITOREO Y PROFILING
+# ============================================================================
+# JProfiler
+*.jprofiler
+
+# YourKit
+*.yk
+
+# JMeter
+*.jtl
+
+# ============================================================================
+# OTROS ARCHIVOS EXCLUIDOS
+# ============================================================================
+# Archivos de configuración específicos del desarrollador
+application-local.properties
+application-dev.properties
+
+# Reportes y métricas
+reports/
+metrics/
+coverage/
+
+# Archivos de ejemplo y demos
+samples/
+examples/
+demo-data/
+
+# Archivos comprimidos
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ============================================================================
+# MANTENER ARCHIVOS ESENCIALES (NEGAR EXCLUSIONES)
+# ============================================================================
+# Asegurar que estos archivos se incluyan
+!src/
+!pom.xml
+!.mvn/wrapper/maven-wrapper.properties
