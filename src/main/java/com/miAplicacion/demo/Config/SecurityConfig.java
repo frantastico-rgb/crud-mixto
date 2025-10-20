@@ -47,10 +47,14 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST
             .authorizeHttpRequests((requests) -> requests
-                // Permitir acceso sin autenticar a la ruta de Proyectos (ejemplo de ruta pública)
+                // Permitir acceso sin autenticar a la ruta de Proyectos MVC (ejemplo de ruta pública)
                 .requestMatchers("/proyectos/**").permitAll() 
-                // Requerir rol 'ADMIN' para todas las operaciones en /empleados
+                // Permitir acceso sin autenticar a la API REST de Proyectos
+                .requestMatchers("/api/proyectos/**").permitAll()
+                // Requerir rol 'ADMIN' para todas las operaciones MVC en /empleados
                 .requestMatchers("/empleados/**").hasRole("ADMIN") 
+                // Requerir rol 'ADMIN' para todas las operaciones REST API en /api/empleados
+                .requestMatchers("/api/empleados/**").hasRole("ADMIN")
                 // Todas las demás peticiones requieren autenticación
                 .anyRequest().authenticated() 
             )

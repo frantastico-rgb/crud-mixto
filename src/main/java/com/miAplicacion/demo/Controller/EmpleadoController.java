@@ -99,6 +99,16 @@ public class EmpleadoController {
         return "redirect:/empleados";
     }
 
+    /**
+     * Soporte para el formulario Thymeleaf que envía POST a /empleados/editar/{id}
+     * (la plantilla actual apunta a /empleados/editar/{id} con method="post")
+     * Delegamos en el método de actualización existente.
+     */
+    @PostMapping("/editar/{id}")
+    public String actualizarDesdeEditar(@PathVariable Long id, @ModelAttribute Empleado empleado) {
+        return actualizar(id, empleado);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         empleadoService.eliminarEmpleado(id);

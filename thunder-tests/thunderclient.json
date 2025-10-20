@@ -1,0 +1,511 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "DemoMixto API Collection",
+  "dateExported": "2025-10-14T00:00:00.000Z",
+  "version": "1.1",
+  "folders": [
+    {
+      "_id": "empleados-folder",
+      "name": "👨‍💼 Empleados API",
+      "containerId": "",
+      "created": "2025-10-14T00:00:00.000Z",
+      "sortNum": 10000
+    },
+    {
+      "_id": "proyectos-folder",
+      "name": "🚀 Proyectos API",
+      "containerId": "",
+      "created": "2025-10-14T00:00:00.000Z",
+      "sortNum": 20000
+    },
+    {
+      "_id": "busquedas-folder",
+      "name": "🔍 Búsquedas",
+      "containerId": "",
+      "created": "2025-10-14T00:00:00.000Z",
+      "sortNum": 30000
+    },
+    {
+      "_id": "tareas-folder",
+      "name": "📝 Tareas",
+      "containerId": "",
+      "created": "2025-10-14T00:00:00.000Z",
+      "sortNum": 40000
+    }
+  ],
+  "requests": [
+    {
+      "_id": "get-empleados",
+      "colId": "demomixto-collection",
+      "containerId": "empleados-folder",
+      "name": "📋 GET - Listar empleados",
+      "url": "{{baseUrl}}/api/empleados",
+      "method": "GET",
+      "sortNum": 10000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "auth": {
+        "type": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "admin"
+        }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.success",
+          "action": "equal",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "_id": "get-empleado-id",
+      "colId": "demomixto-collection",
+      "containerId": "empleados-folder",
+      "name": "👤 GET - Empleado por ID",
+      "url": "{{baseUrl}}/api/empleados/{{empleadoId}}",
+      "method": "GET",
+      "sortNum": 20000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "auth": {
+        "type": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "admin"
+        }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "create-empleado",
+      "colId": "demomixto-collection",
+      "containerId": "empleados-folder",
+      "name": "➕ POST - Crear empleado",
+      "url": "{{baseUrl}}/api/empleados",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Carlos Thunder\",\n  \"cargo\": \"Backend Developer\",\n  \"salario\": 52000,\n  \"email\": \"carlos.thunder@example.com\"\n}",
+        "form": []
+      },
+      "auth": {
+        "type": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "admin"
+        }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-var",
+          "custom": "json.data.id",
+          "action": "setto",
+          "value": "nuevoEmpleadoId"
+        }
+      ]
+    },
+    {
+      "_id": "update-empleado",
+      "colId": "demomixto-collection",
+      "containerId": "empleados-folder",
+      "name": "✏️ PUT - Actualizar empleado",
+      "url": "{{baseUrl}}/api/empleados/{{nuevoEmpleadoId}}",
+      "method": "PUT",
+      "sortNum": 40000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Carlos Thunder Senior\",\n  \"cargo\": \"Senior Backend Developer\",\n  \"salario\": 65000,\n  \"email\": \"carlos.thunder.senior@example.com\"\n}",
+        "form": []
+      },
+      "auth": {
+        "type": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "admin"
+        }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.data.salario",
+          "action": "equal",
+          "value": "65000"
+        }
+      ]
+    },
+    {
+      "_id": "delete-empleado",
+      "colId": "demomixto-collection",
+      "containerId": "empleados-folder",
+      "name": "🗑️ DELETE - Eliminar empleado",
+      "url": "{{baseUrl}}/api/empleados/{{nuevoEmpleadoId}}",
+      "method": "DELETE",
+      "sortNum": 50000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "auth": {
+        "type": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "admin"
+        }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "get-proyectos",
+      "colId": "demomixto-collection",
+      "containerId": "proyectos-folder",
+      "name": "📋 GET - Listar proyectos",
+      "url": "{{baseUrl}}/api/proyectos",
+      "method": "GET",
+      "sortNum": 60000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.success",
+          "action": "equal",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "_id": "get-proyectos-filtros",
+      "colId": "demomixto-collection",
+      "containerId": "proyectos-folder",
+      "name": "🔍 GET - Proyectos con filtros",
+      "url": "{{baseUrl}}/api/proyectos?empleadoId={{empleadoId}}&completado=false",
+      "method": "GET",
+      "sortNum": 70000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "empleadoId",
+          "value": "{{empleadoId}}",
+          "isPath": false
+        },
+        {
+          "name": "completado",
+          "value": "false",
+          "isPath": false
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "create-proyecto",
+      "colId": "demomixto-collection",
+      "containerId": "proyectos-folder",
+      "name": "➕ POST - Crear proyecto",
+      "url": "{{baseUrl}}/api/proyectos",
+      "method": "POST",
+      "sortNum": 80000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Proyecto Thunder Client\",\n  \"descripcion\": \"Proyecto creado para probar Thunder Client en DemoMixto\",\n  \"empleadoId\": 1,\n  \"fechaInicio\": \"2025-01-20\",\n  \"completado\": false\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-var",
+          "custom": "json.data.id",
+          "action": "setto",
+          "value": "nuevoProyectoId"
+        }
+      ]
+    },
+    {
+      "_id": "update-proyecto",
+      "colId": "demomixto-collection",
+      "containerId": "proyectos-folder",
+      "name": "✏️ PUT - Actualizar proyecto",
+      "url": "{{baseUrl}}/api/proyectos/{{nuevoProyectoId}}",
+      "method": "PUT",
+      "sortNum": 90000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Proyecto Thunder Client - Actualizado\",\n  \"descripcion\": \"Proyecto actualizado y completado exitosamente\",\n  \"empleadoId\": 1,\n  \"fechaInicio\": \"2025-01-20\",\n  \"completado\": true\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.data.completado",
+          "action": "equal",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "_id": "add-tarea",
+      "colId": "demomixto-collection",
+      "containerId": "tareas-folder",
+      "name": "➕ POST - Agregar tarea",
+      "url": "{{baseUrl}}/api/proyectos/{{nuevoProyectoId}}/tareas",
+      "method": "POST",
+      "sortNum": 100000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Probar Thunder Client\",\n  \"estado\": \"pendiente\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "update-tarea",
+      "colId": "demomixto-collection",
+      "containerId": "tareas-folder",
+      "name": "✏️ PUT - Actualizar tarea",
+      "url": "{{baseUrl}}/api/proyectos/{{nuevoProyectoId}}/tareas/0",
+      "method": "PUT",
+      "sortNum": 110000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Thunder Client - Completado\",\n  \"estado\": \"completo\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "buscar-empleados",
+      "colId": "demomixto-collection",
+      "containerId": "busquedas-folder",
+      "name": "🔍 GET - Buscar empleados",
+      "url": "{{baseUrl}}/api/empleados/buscar?termino=developer",
+      "method": "GET",
+      "sortNum": 120000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "termino",
+          "value": "developer",
+          "isPath": false
+        }
+      ],
+      "auth": {
+        "type": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "admin"
+        }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "buscar-salario",
+      "colId": "demomixto-collection",
+      "containerId": "busquedas-folder",
+      "name": "💰 GET - Buscar por salario",
+      "url": "{{baseUrl}}/api/empleados/buscar-salario?min=40000&max=60000",
+      "method": "GET",
+      "sortNum": 130000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [],
+      "params": [
+        {
+          "name": "min",
+          "value": "40000",
+          "isPath": false
+        },
+        {
+          "name": "max",
+          "value": "60000",
+          "isPath": false
+        }
+      ],
+      "auth": {
+        "type": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "admin"
+        }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "estadisticas-proyectos",
+      "colId": "demomixto-collection",
+      "containerId": "proyectos-folder",
+      "name": "📊 GET - Estadísticas",
+      "url": "{{baseUrl}}/api/proyectos/estadisticas",
+      "method": "GET",
+      "sortNum": 140000,
+      "created": "2025-10-14T00:00:00.000Z",
+      "modified": "2025-10-14T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.data.totalProyectos",
+          "action": "istype",
+          "value": "number"
+        }
+      ]
+    }
+  ]
+}

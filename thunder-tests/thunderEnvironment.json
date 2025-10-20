@@ -1,0 +1,28 @@
+{
+  "client": "Thunder Client",
+  "environmentName": "DemoMixto Local",
+  "dateExported": "2025-10-14T00:00:00.000Z",
+  "version": "1.0",
+  "variables": [
+    {
+      "name": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "name": "empleadoId",
+      "value": "1"
+    },
+    {
+      "name": "proyectoId", 
+      "value": "64f8b2c8e4b0a1234567890a"
+    },
+    {
+      "name": "nuevoEmpleadoId",
+      "value": ""
+    },
+    {
+      "name": "nuevoProyectoId",
+      "value": ""
+    }
+  ]
+}

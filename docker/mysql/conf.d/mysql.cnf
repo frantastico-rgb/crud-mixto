@@ -1,0 +1,114 @@
+# 🗄️ Configuración personalizada MySQL para DemoMixto
+# Este archivo proporciona configuraciones optimizadas para el contenedor
+
+[mysqld]
+# ============================================================================
+# CONFIGURACIÓN BÁSICA
+# ============================================================================
+# Configuración de caracteres
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+init-connect = 'SET NAMES utf8mb4'
+
+# Configuración de zona horaria
+default-time-zone = '-05:00'
+
+# ============================================================================
+# CONFIGURACIÓN DE RENDIMIENTO
+# ============================================================================
+# Buffer pool - ajustado para contenedores con memoria limitada
+innodb_buffer_pool_size = 128M
+innodb_buffer_pool_instances = 1
+
+# Configuración de conexiones
+max_connections = 50
+max_user_connections = 45
+
+# Configuración de logs
+innodb_log_file_size = 48M
+innodb_log_buffer_size = 16M
+
+# Configuración de tablas
+innodb_file_per_table = 1
+innodb_flush_log_at_trx_commit = 2
+
+# ============================================================================
+# CONFIGURACIÓN DE SEGURIDAD
+# ============================================================================
+# Autenticación
+default_authentication_plugin = mysql_native_password
+
+# Configuración de SSL (deshabilitado para desarrollo)
+skip_ssl
+
+# ============================================================================
+# CONFIGURACIÓN DE LOGGING
+# ============================================================================
+# General log (deshabilitado para rendimiento)
+general_log = 0
+
+# Slow query log (habilitado para debugging)
+slow_query_log = 1
+long_query_time = 2
+slow_query_log_file = /var/log/mysql/mysql-slow.log
+
+# Error log
+log_error = /var/log/mysql/error.log
+
+# ============================================================================
+# CONFIGURACIÓN DE BINARY LOG
+# ============================================================================
+# Deshabilitado para desarrollo (ahorra espacio)
+skip-log-bin
+
+# ============================================================================
+# CONFIGURACIÓN DE NETWORKING
+# ============================================================================
+# Configuración de red para contenedores
+bind-address = 0.0.0.0
+port = 3306
+
+# Timeouts optimizados para contenedores
+wait_timeout = 600
+interactive_timeout = 600
+connect_timeout = 60
+
+# ============================================================================
+# CONFIGURACIÓN DE CACHE
+# ============================================================================
+# Query cache (deshabilitado en MySQL 8.0+)
+# query_cache_type = 0
+# query_cache_size = 0
+
+# Table cache
+table_open_cache = 64
+table_definition_cache = 256
+
+# ============================================================================
+# CONFIGURACIÓN TEMPORAL
+# ============================================================================
+# Configuración de tmp tables
+tmp_table_size = 32M
+max_heap_table_size = 32M
+
+# ============================================================================
+# CONFIGURACIÓN INNODB ESPECÍFICA
+# ============================================================================
+# Configuración de flush
+innodb_flush_method = O_DIRECT
+
+# Configuración de threads
+innodb_read_io_threads = 4
+innodb_write_io_threads = 4
+
+# Configuración de lock
+innodb_lock_wait_timeout = 50
+
+[mysql]
+# Configuración del cliente MySQL
+default-character-set = utf8mb4
+
+[client]
+# Configuración del cliente genérico
+default-character-set = utf8mb4
+port = 3306
