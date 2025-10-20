@@ -1,0 +1,56 @@
+{
+	"id": "env-crud-mixto",
+	"name": "CRUD Mixto - Environment",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"description": "URL base del servidor Spring Boot",
+			"enabled": true,
+			"type": "default"
+		},
+		{
+			"key": "empleadoId",
+			"value": "1",
+			"description": "ID de empleado para pruebas (ajustar según datos reales)",
+			"enabled": true,
+			"type": "default"
+		},
+		{
+			"key": "proyectoId",
+			"value": "507f1f77bcf86cd799439011",
+			"description": "ID de proyecto MongoDB para pruebas (ajustar según datos reales)",
+			"enabled": true,
+			"type": "default"
+		},
+		{
+			"key": "adminUsername",
+			"value": "admin",
+			"description": "Usuario administrador para endpoints de empleados",
+			"enabled": true,
+			"type": "default"
+		},
+		{
+			"key": "adminPassword",
+			"value": "admin",
+			"description": "Contraseña administrador",
+			"enabled": true,
+			"type": "secret"
+		},
+		{
+			"key": "userUsername",
+			"value": "user",
+			"description": "Usuario regular (solo lectura en empleados)",
+			"enabled": true,
+			"type": "default"
+		},
+		{
+			"key": "userPassword",
+			"value": "password",
+			"description": "Contraseña usuario regular",
+			"enabled": true,
+			"type": "secret"
+		}
+	],
+	"_postman_variable_scope": "environment"
+}
