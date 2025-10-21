@@ -1,0 +1,51 @@
+# Multi-stage build for Railway deployment
+FROM maven:3.9.4-eclipse-temurin-17 AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy Maven files for dependency caching
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
+
+# Download dependencies (cached layer)
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
+
+# Build application
+RUN mvn clean package -DskipTests -B
+
+# Production stage
+FROM eclipse-temurin:17-jre-alpine
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S spring && \
+    adduser -S spring -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Copy JAR from builder stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Change ownership to spring user
+RUN chown -R spring:spring /app
+USER spring
+
+# Expose port (Railway will set PORT env var)
+EXPOSE 8080
+
+# Health check for Railway
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+
+# Run application with Railway-optimized settings
+ENTRYPOINT ["java", \
+    "-XX:+UseContainerSupport", \
+    "-XX:MaxRAMPercentage=75.0", \
+    "-Djava.security.egd=file:/dev/./urandom", \
+    "-Dspring.profiles.active=railway", \
+    "-jar", "app.jar"]

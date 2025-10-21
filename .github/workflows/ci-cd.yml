@@ -220,11 +220,41 @@ jobs:
         echo "❌ Deployment falló"
         echo "🔍 Revisar logs para más detalles"
 
-  # 📊 REPORTES Y NOTIFICACIONES
+  # � DEPLOYMENT A RAILWAY (ALTERNATIVO)
+  deploy-railway:
+    name: 🚄 Deploy to Railway
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && contains(github.event.head_commit.message, '[railway]')
+    
+    steps:
+    # ⬇️ Checkout código
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+    
+    # 🚄 Deploy to Railway using CLI
+    - name: 🚄 Deploy to Railway
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      run: |
+        # Install Railway CLI
+        npm install -g @railway/cli
+        
+        # Deploy to Railway
+        railway deploy --service=${{ secrets.RAILWAY_SERVICE_ID || 'demomixto' }}
+    
+    # 🔔 Notificación Railway success
+    - name: 🔔 Notify Railway Deployment Success
+      if: success()
+      run: |
+        echo "✅ Railway deployment exitoso"
+        echo "🌐 URL: https://demomixto.up.railway.app"
+
+  # �📊 REPORTES Y NOTIFICACIONES
   notify:
     name: 📊 Send Notifications
     runs-on: ubuntu-latest
-    needs: [test, build]
+    needs: [test, build, deploy]
     if: always()
 
     steps:
@@ -234,6 +264,7 @@ jobs:
         echo "========================"
         echo "🧪 Tests: ${{ needs.test.result }}"
         echo "📦 Build: ${{ needs.build.result }}"
+        echo "🚀 Deploy: ${{ needs.deploy.result }}"
         echo "⏰ Timestamp: $(date)"
         echo "🔗 Commit: ${{ github.sha }}"
         echo "👤 Author: ${{ github.actor }}"
