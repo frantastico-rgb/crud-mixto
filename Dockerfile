@@ -4,7 +4,7 @@
 # ============================================================================
 # ETAPA 1: BUILD - Compilación de la aplicación
 # ============================================================================
-FROM maven:3.9-openjdk-17-slim AS builder
+FROM maven:3.9.4-eclipse-temurin-17 AS builder
 
 # Metadata
 LABEL maintainer="frantastico-rgb"
