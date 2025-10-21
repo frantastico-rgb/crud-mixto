@@ -19,13 +19,37 @@ import com.miAplicacion.demo.Entity.Empleado;
 import com.miAplicacion.demo.Entity.Proyecto;
 import com.miAplicacion.demo.Service.EmpleadoService;
 import com.miAplicacion.demo.Service.ProyectoService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 /**
- * Controlador híbrido para gestión de empleados
- * Maneja tanto vistas MVC (Thymeleaf) como endpoints REST
- * Incluye funcionalidades de búsqueda y asociación con proyectos
+ * 👥 **EMPLEADOS CONTROLLER** - Gestión completa de empleados
+ * 
+ * **CARACTERÍSTICAS CLAVE PARA INTEGRACIÓN:**
+ * ✅ CRUD completo con validaciones
+ * ✅ Búsquedas avanzadas (nombre, cargo, salario)
+ * ✅ Reportes y estadísticas
+ * ✅ Exportación a CSV/Excel
+ * ✅ Integración con proyectos
+ * ✅ Autenticación requerida (admin)
+ * 
+ * **CASOS DE USO DE INTEGRACIÓN:**
+ * 🔗 ERP Systems: Sincronización de empleados
+ * 🔗 HR Systems: Gestión de recursos humanos
+ * 🔗 Payroll Systems: Datos para nómina
+ * 🔗 BI Tools: Análisis de personal
  */
+@Tag(name = "👥 Empleados", description = "API completa para gestión de empleados con seguridad admin")
+@SecurityRequirement(name = "basicAuth")
 @Controller // Usa Controller para renderizar vistas Thymeleaf
 @RequestMapping("/empleados") // Todas las rutas empiezan con /empleados
 public class EmpleadoController {
@@ -86,8 +110,40 @@ public class EmpleadoController {
         return "redirect:/empleados";
     }
 
+    /**
+     * 👤 **OBTENER EMPLEADO POR ID**
+     * Endpoint crítico para integraciones que necesitan datos específicos
+     */
+    @Operation(
+        summary = "👤 Obtener empleado por ID",
+        description = """
+                **INTEGRACIÓN KEY**: Endpoint fundamental para obtener datos específicos
+                - Retorna empleado completo con todos sus campos
+                - Esencial para formularios de edición
+                - Base para sincronización con sistemas externos
+                """,
+        tags = {"CRUD Básico"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "✅ Empleado encontrado",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = Empleado.class)
+            )
+        ),
+        @ApiResponse(responseCode = "404", description = "❌ Empleado no encontrado"),
+        @ApiResponse(responseCode = "401", description = "🔒 No autorizado")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<Empleado> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<Empleado> obtenerPorId(
+            @Parameter(
+                description = "ID único del empleado",
+                example = "1",
+                required = true
+            )
+            @PathVariable Long id) {
         return empleadoService.obtenerEmpleadoPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -120,12 +176,39 @@ public class EmpleadoController {
     // ===============================
     
     /**
-     * API REST: Buscar empleados por término general
-     * GET /empleados/buscar?termino=juan
+     * 🔍 **BÚSQUEDA GENERAL DE EMPLEADOS**
+     * Busca empleados por nombre o cargo usando un término general
      */
+    @Operation(
+        summary = "🔍 Buscar empleados por término",
+        description = """
+                **INTEGRACIÓN KEY**: Endpoint principal para búsqueda de empleados
+                - Busca en nombre y cargo simultáneamente
+                - Útil para autocomplete y filtros dinámicos
+                - Respuesta rápida para interfaces client-side
+                """,
+        tags = {"Búsquedas"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "✅ Empleados encontrados",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = Empleado.class)
+            )
+        ),
+        @ApiResponse(responseCode = "401", description = "🔒 No autorizado - se requiere admin"),
+        @ApiResponse(responseCode = "400", description = "❌ Parámetros inválidos")
+    })
     @GetMapping("/buscar")
     @ResponseBody
     public ResponseEntity<List<Empleado>> buscarEmpleados(
+            @Parameter(
+                description = "Término de búsqueda (busca en nombre y cargo)",
+                example = "Juan",
+                required = true
+            )
             @RequestParam("termino") String termino) {
         List<Empleado> empleados = empleadoService.buscarEmpleados(termino);
         return ResponseEntity.ok(empleados);

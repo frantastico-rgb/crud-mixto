@@ -11,10 +11,38 @@
 
 **DemoMixto** es una aplicación de demostración que implementa un **sistema híbrido de gestión empresarial** con persistencia dual, combinando MySQL para datos estructurados (empleados) y MongoDB Atlas para documentos flexibles (proyectos y tareas).
 
+## 🚀 **Quick Start - Usar Ahora Mismo**
+
+```bash
+# 1. Verificar que la aplicación esté ejecutándose
+# (DemoApplication.java desde VS Code)
+
+# 2. Acceder a la aplicación:
+✅ http://localhost:8080                 # Página principal
+✅ http://localhost:8080/empleados       # Gestión Empleados (admin/admin)
+✅ http://localhost:8080/proyectos       # Gestión Proyectos (acceso público)
+
+# 3. APIs disponibles:
+✅ http://localhost:8080/api/empleados   # API REST Empleados
+✅ http://localhost:8080/api/proyectos   # API REST Proyectos
+
+# 4. Credenciales de prueba:
+👤 Admin: admin / admin    (acceso completo)
+👤 User:  user / password  (solo proyectos)
+```
+
+### 📋 **¿Qué puedes hacer inmediatamente?**
+- ✅ **Gestionar empleados** (CRUD completo con autenticación)
+- ✅ **Gestionar proyectos** (CRUD completo, acceso público)
+- ✅ **Exportar reportes** en Excel
+- ✅ **Usar APIs REST** para integración
+- ✅ **Testing con Thunder Client** (colecciones incluidas)
+
 ---
 
 ## 📑 **Tabla de Contenidos**
 
+- [🚀 Quick Start](#-quick-start---usar-ahora-mismo)
 - [🎯 Características Principales](#-características-principales)
 - [🏗️ Arquitectura](#️-arquitectura)
 - [💾 Modelo de Datos](#-modelo-de-datos)
@@ -24,9 +52,10 @@
 - [🔐 Seguridad](#-seguridad)
 - [📱 Interfaces Web](#-interfaces-web)
 - [🧪 Testing con Thunder Client](#-testing-con-thunder-client)
-- [� Containerización con Docker](#-containerización-con-docker)
-- [�📊 Tecnologías Utilizadas](#-tecnologías-utilizadas)
+- [🐳 Containerización con Docker](#-containerización-con-docker)
+- [📊 Tecnologías Utilizadas](#-tecnologías-utilizadas)
 - [📂 Estructura del Proyecto](#-estructura-del-proyecto)
+- [👨‍💼 Manual de Usuario](#-manual-de-usuario)
 - [🤝 Contribuciones](#-contribuciones)
 
 ---
@@ -197,8 +226,34 @@ mvn clean install
 
 ## ▶️ **Ejecución**
 
-### 🚀 **Modo Desarrollo**
+### 🎯 **Estado Actual del Proyecto**
+
+```
+✅ FUNCIONANDO AHORA MISMO:
+├── DemoApplication.java ejecutándose
+├── Puerto 8080 activo y operativo
+├── MySQL local conectado
+├── MongoDB Atlas conectado
+├── Todas las funcionalidades disponibles
+├── APIs REST completamente funcionales
+├── Interfaces web responsive
+└── Testing con Thunder Client validado
+
+⏳ OPCIONAL (REQUIERE SETUP):
+├── Docker Desktop (no instalado)
+├── Stack completo con GUIs
+├── Puertos 8081, 8082 (herramientas adicionales)
+└── Contenedores aislados
+```
+
+### 🚀 **Modo Desarrollo (Actual - Recomendado)**
 ```bash
+# Ejecutar desde VS Code (ACTUAL):
+# 1. Abrir VS Code en el proyecto
+# 2. Ejecutar DemoApplication.java
+# 3. ¡Listo! Aplicación funcionando
+
+# Ejecutar desde terminal:
 mvn spring-boot:run
 ```
 
@@ -206,6 +261,15 @@ mvn spring-boot:run
 ```bash
 mvn clean package
 java -jar target/demo-0.0.1-SNAPSHOT.jar
+```
+
+### 🐳 **Modo Docker (Opcional)**
+```bash
+# Solo si Docker Desktop está instalado:
+docker-compose up -d
+
+# Verificar servicios:
+docker-compose ps
 ```
 
 ### 🌐 **Acceso a la Aplicación**
@@ -451,57 +515,131 @@ Usuarios de prueba:
 
 ---
 
-## � **Containerización con Docker**
+## 🐳 **Containerización con Docker**
 
 DemoMixto incluye una **configuración Docker completa** que permite ejecutar toda la aplicación y sus dependencias con un solo comando. La solución incluye stack completo con monitoreo y herramientas de administración.
 
-### 🎯 **IMPORTANTE: Dos Opciones de Ejecución**
+### 🎯 **IMPORTANTE: Dos Modos de Ejecución Disponibles**
 
 ```
-🔥 OPCIÓN 1: DESARROLLO DIRECTO (ACTUAL - FUNCIONANDO)
+🔥 MODO 1: DESARROLLO DIRECTO (RECOMENDADO - FUNCIONANDO)
 ├── 📍 Ejecutar: DemoApplication.java desde VS Code/Maven
 ├── 📍 Configuración: application.properties
 ├── 📍 Bases de datos: MySQL local + MongoDB Atlas
-├── 📍 Puerto: 8080
-├── 📍 Instalación: ✅ YA INSTALADO Y FUNCIONANDO
-└── 📍 Estado: ✅ OPERATIVO
+├── 📍 Puerto: 8080 ✅ ACTIVO
+├── 📍 Requisitos: Java 17 + Maven + MySQL + MongoDB Atlas
+├── 📍 Instalación: ✅ CONFIGURADO Y OPERATIVO
+├── 📍 Ventajas: Setup rápido, ideal para desarrollo
+└── 📍 Estado: ✅ FUNCIONANDO PERFECTAMENTE
 
-🐳 OPCIÓN 2: CONTAINERIZADO (REQUIERE INSTALACIÓN EN PC)
+🐳 MODO 2: CONTAINERIZADO COMPLETO (OPCIONAL - REQUIERE SETUP)
 ├── 📍 Ejecutar: docker-compose up -d
 ├── 📍 Configuración: application-docker.properties
 ├── 📍 Bases de datos: MySQL + MongoDB en contenedores
 ├── 📍 Puertos: 8080, 8081, 8082, 9090, 3000
-├── 📍 Instalación: ❌ REQUIERE DOCKER DESKTOP EN EL PC
-└── 📍 Estado: ⏳ PENDIENTE INSTALACIÓN
+├── 📍 Requisitos: Docker Desktop instalado en PC
+├── 📍 Instalación: ❌ REQUIERE DOCKER DESKTOP
+├── 📍 Ventajas: Stack completo, GUIs incluidas, portabilidad
+└── 📍 Estado: ⏳ DISPONIBLE TRAS INSTALACIÓN DOCKER
 ```
 
-### 🚀 **Para usar la Opción Docker:**
+### 🚀 **Inicio Rápido (Modo Desarrollo)**
 
-**1️⃣ Instalar Docker Desktop en tu PC** (NO en el proyecto):
+**Si quieres usar DemoMixto AHORA MISMO:**
+
 ```bash
-# Seguir guía completa en:
-# INSTALACION-DOCKER-WINDOWS.md
+# 1. Verificar que DemoApplication.java esté ejecutándose
+# 2. Acceder a la aplicación
+http://localhost:8080
 
-# Pasos principales:
-# 1. Habilitar WSL 2 en Windows
-# 2. Descargar Docker Desktop
-# 3. Instalar en el PC
-# 4. Configurar y verificar
+# ✅ URLs funcionando actualmente:
+✅ http://localhost:8080/empleados    # Gestión Empleados (admin/admin)
+✅ http://localhost:8080/proyectos    # Gestión Proyectos (público)
+✅ http://localhost:8080/api/empleados # API Empleados
+✅ http://localhost:8080/api/proyectos # API Proyectos
 ```
 
-**2️⃣ Ejecutar stack completo** (una vez instalado Docker):
+### � **Activar Modo Docker Completo (Opcional)**
+
+**¿Quieres las herramientas adicionales de administración?**
+
+El modo Docker incluye GUIs de administración que el modo desarrollo no tiene:
+
+```
+🎯 BENEFICIOS ADICIONALES DEL MODO DOCKER:
+├── 🗄️ Adminer (GUI MySQL): http://localhost:8081
+├── 🍃 Mongo Express (GUI MongoDB): http://localhost:8082  
+├── 📊 Prometheus (Métricas): http://localhost:9090
+├── 📈 Grafana (Dashboards): http://localhost:3000
+├── 🔒 Bases de datos containerizadas (aislamiento completo)
+└── 🚀 Portabilidad total (mismo entorno en cualquier PC)
+```
+
+**Pasos para activar Docker:**
+
+**1️⃣ Instalar Docker Desktop en tu PC:**
+- Seguir guía completa: [`INSTALACION-DOCKER-WINDOWS.md`](./INSTALACION-DOCKER-WINDOWS.md)
+- Tiempo estimado: 30-45 minutos
+- Requisitos: Windows 10/11 + WSL 2
+
+**2️⃣ Ejecutar stack completo:**
 ```bash
 # Detener DemoApplication.java si está ejecutándose
-# Después ejecutar:
+# Después ejecutar en terminal:
+cd c:\java2931811F\demomixto
 docker-compose up -d
+
+# Esperar 2-3 minutos para que todos los servicios estén UP
+# Verificar estado:
+docker-compose ps
 ```
 
-**🎯 URLs disponibles:**
-- **📱 Aplicación**: [http://localhost:8080](http://localhost:8080)
-- **🗄️ Adminer (MySQL)**: [http://localhost:8081](http://localhost:8081)
-- **🍃 Mongo Express**: [http://localhost:8082](http://localhost:8082)
-- **📊 Prometheus**: [http://localhost:9090](http://localhost:9090) *(opcional)*
-- **📈 Grafana**: [http://localhost:3000](http://localhost:3000) *(opcional)*
+**3️⃣ Acceder a herramientas:**
+```bash
+# Una vez que docker-compose ps muestre todos los servicios UP:
+✅ http://localhost:8080  # DemoMixto (misma app)
+✅ http://localhost:8081  # Adminer (MySQL GUI)
+✅ http://localhost:8082  # Mongo Express (MongoDB GUI)
+✅ http://localhost:9090  # Prometheus (opcional)
+✅ http://localhost:3000  # Grafana (opcional)
+```
+
+**🎯 URLs disponibles según modo:**
+
+```
+� MODO DESARROLLO (ACTUAL):
+✅ http://localhost:8080           # DemoMixto App
+
+🐳 MODO DOCKER (TRAS INSTALACIÓN):
+✅ http://localhost:8080           # DemoMixto App
+✅ http://localhost:8081           # Adminer (MySQL GUI)
+✅ http://localhost:8082           # Mongo Express (MongoDB GUI)
+✅ http://localhost:9090           # Prometheus (opcional)
+✅ http://localhost:3000           # Grafana (opcional)
+```
+
+### ⚠️ **Troubleshooting Docker**
+
+**❌ Error: "docker command not found"**
+```bash
+# Solución: Docker Desktop no está instalado
+# 1. Seguir INSTALACION-DOCKER-WINDOWS.md
+# 2. Reiniciar terminal después de instalación
+```
+
+**❌ Error: "Port 8080 already in use"**
+```bash
+# Solución: DemoApplication.java está ejecutándose
+# 1. Detener DemoApplication.java en VS Code
+# 2. Reintentar: docker-compose up -d
+```
+
+**❌ Error: "localhost:8081 connection refused"**
+```bash
+# Explicación: Normal si no tienes Docker instalado
+# El puerto 8081 solo funciona con el stack Docker completo
+# Solución: Usar modo desarrollo (8080) o instalar Docker
+```
 
 ### 🏗️ **Arquitectura Docker**
 
@@ -799,6 +937,258 @@ demomixto/
 └── 📁 docs/                            # Documentación técnica
     └── 📋 01-ANALISIS-Y-DISEÑO.md      # Análisis arquitectónico
 ```
+
+---
+
+## 👨‍💼 **Manual de Usuario**
+
+### 🎯 **Introducción para Usuarios Finales**
+
+DemoMixto es una aplicación web que te permite gestionar empleados y proyectos de tu empresa de manera sencilla e intuitiva. No necesitas conocimientos técnicos para usarla.
+
+### 🚀 **Acceso a la Aplicación**
+
+1. **Abrir navegador web** (Chrome, Firefox, Edge)
+2. **Ir a:** `http://localhost:8080`
+3. **Página principal:** Verás opciones para Empleados y Proyectos
+
+### 👥 **Gestión de Empleados**
+
+#### 🔐 **Acceso Requerido**
+- **URL:** `http://localhost:8080/empleados`
+- **Credenciales:** 
+  - Usuario: `admin`
+  - Contraseña: `admin`
+
+#### ✨ **Funcionalidades Disponibles**
+
+**📋 Lista de Empleados**
+- Ver todos los empleados registrados
+- Ver información: nombre, cargo, salario, email
+- Indicadores visuales de nivel salarial (ALTO/BAJO)
+
+**🔍 Búsqueda de Empleados**
+```
+1. Usar la barra de búsqueda en la parte superior
+2. Buscar por:
+   - Nombre del empleado
+   - Cargo
+   - Rango salarial
+3. Hacer clic en "Buscar"
+4. Usar "Ver Todos" para limpiar filtros
+```
+
+**➕ Crear Nuevo Empleado**
+```
+1. Hacer clic en "➕ Nuevo Empleado"
+2. Llenar el formulario:
+   - Nombre completo (obligatorio)
+   - Cargo
+   - Salario (solo números)
+   - Email (debe ser único)
+3. Hacer clic en "Guardar"
+4. Confirmación: "Empleado creado exitosamente"
+```
+
+**✏️ Editar Empleado**
+```
+1. En la lista, hacer clic en "✏️ Editar"
+2. Modificar los datos necesarios
+3. Hacer clic en "Actualizar"
+4. Confirmación: "Empleado actualizado exitosamente"
+```
+
+**🗑️ Eliminar Empleado**
+```
+1. En la lista, hacer clic en "🗑️ Eliminar"
+2. Confirmar en el popup: "¿Eliminar empleado?"
+3. Hacer clic en "Aceptar"
+4. El empleado se elimina permanentemente
+```
+
+**📊 Reportes en Excel**
+```
+1. Hacer clic en "📊 Reportes"
+2. El archivo Excel se descarga automáticamente
+3. Contiene: lista completa de empleados con estadísticas
+4. Archivo: "reporte-empleados-[fecha].xlsx"
+```
+
+**👁️ Ver Proyectos de Empleado**
+```
+1. En la lista, hacer clic en "📋 Proyectos"
+2. Ver todos los proyectos asignados a ese empleado
+3. Información: nombre, descripción, estado, tareas
+```
+
+### 📋 **Gestión de Proyectos**
+
+#### 🌐 **Acceso Público**
+- **URL:** `http://localhost:8080/proyectos`
+- **Sin credenciales:** Acceso libre para todos
+
+#### ✨ **Funcionalidades Disponibles**
+
+**📋 Lista de Proyectos**
+- Ver todos los proyectos de la empresa
+- Ver información: nombre, empleado asignado, estado, tareas
+- Indicadores visuales de progreso
+
+**➕ Crear Nuevo Proyecto**
+```
+1. Hacer clic en "➕ Nuevo Proyecto"
+2. Llenar el formulario:
+   - Nombre del proyecto (obligatorio)
+   - Descripción detallada
+   - Empleado responsable (seleccionar de lista)
+   - Fecha de inicio
+   - Estado: Completo/Incompleto
+3. Hacer clic en "Crear Proyecto"
+4. Confirmación: "Proyecto creado exitosamente"
+```
+
+**✏️ Editar Proyecto**
+```
+1. En la lista, hacer clic en "✏️ Editar"
+2. Modificar información básica del proyecto
+3. Gestionar tareas:
+   - ➕ Agregar nueva tarea
+   - ✏️ Editar tarea existente
+   - 🗑️ Eliminar tarea
+   - 🔄 Cambiar estado: pendiente/en-progreso/completo
+4. Hacer clic en "Actualizar Proyecto"
+```
+
+**📝 Gestión de Tareas dentro de Proyecto**
+```
+AGREGAR TAREA:
+1. En edición de proyecto, ir a sección "Tareas"
+2. Escribir título de la tarea
+3. Seleccionar estado inicial
+4. Hacer clic en "➕ Agregar Tarea"
+
+EDITAR TAREA:
+1. Hacer clic en "✏️" junto a la tarea
+2. Modificar título y/o estado
+3. Hacer clic en "💾 Guardar"
+
+ELIMINAR TAREA:
+1. Hacer clic en "🗑️" junto a la tarea
+2. Confirmar eliminación
+```
+
+**🗑️ Eliminar Proyecto**
+```
+1. En la lista, hacer clic en "🗑️ Eliminar"
+2. Confirmar en popup: "¿Eliminar proyecto?"
+3. ADVERTENCIA: Se eliminan también todas las tareas
+4. Hacer clic en "Aceptar"
+```
+
+**📊 Ver Estadísticas**
+```
+1. Hacer clic en "📊 Reportes Proyectos"
+2. Ver métricas en tiempo real:
+   - Total de proyectos
+   - Proyectos completados/pendientes
+   - Total de tareas por estado
+   - Distribución por empleado
+```
+
+### 🎨 **Navegación en la Aplicación**
+
+**🏠 Menú Principal**
+- **Inicio:** Página principal con accesos directos
+- **Empleados:** Gestión completa de personal
+- **Proyectos:** Gestión completa de proyectos
+
+**🔄 Navegación Rápida**
+- En Empleados: botón "Ver Proyectos" para cambiar de módulo
+- En Proyectos: botón "Reportes Empleados" para ir a empleados
+- Botones de navegación en la parte inferior de cada página
+
+### ⚠️ **Mensajes y Notificaciones**
+
+**✅ Operaciones Exitosas**
+- Fondo verde: "Operación completada exitosamente"
+- Aparece por 3 segundos automáticamente
+
+**❌ Errores Comunes**
+- Email duplicado: "El email ya existe en el sistema"
+- Campos vacíos: "Complete todos los campos obligatorios"
+- Sin conexión: "Error de conexión - intente nuevamente"
+
+**⚠️ Confirmaciones**
+- Eliminar empleado: "¿Está seguro de eliminar este empleado?"
+- Eliminar proyecto: "¿Eliminar proyecto y todas sus tareas?"
+- Siempre confirmar antes de eliminar
+
+### 📱 **Uso en Dispositivos**
+
+**💻 Computadora (Recomendado)**
+- Experiencia completa
+- Todos los botones y funciones visibles
+- Mejor para gestión masiva de datos
+
+**📱 Móvil/Tablet**
+- Diseño responsive
+- Menús adaptados al tamaño de pantalla
+- Funcionalidades completas disponibles
+- Ideal para consultas rápidas
+
+### 🔐 **Seguridad y Privacidad**
+
+**👤 Niveles de Usuario**
+- **Admin (admin/admin):** Acceso completo a empleados y proyectos
+- **Usuario (user/password):** Solo acceso a proyectos
+- **Invitado:** Solo lectura de proyectos
+
+**🔒 Datos Seguros**
+- Información encriptada
+- Sesiones con timeout automático
+- Validación de emails únicos
+- Backup automático de datos
+
+### 🆘 **Soporte y Problemas Comunes**
+
+**❌ No puedo acceder a empleados**
+```
+Solución:
+1. Verificar credenciales: admin/admin
+2. Usar exactamente: http://localhost:8080/empleados
+3. Si persiste, contactar administrador
+```
+
+**❌ No se guardan los cambios**
+```
+Solución:
+1. Verificar conexión a internet
+2. Completar todos los campos obligatorios
+3. Esperar mensaje de confirmación antes de salir
+```
+
+**❌ El email ya existe**
+```
+Solución:
+1. Cada empleado debe tener email único
+2. Verificar si el empleado ya está registrado
+3. Usar email alternativo o corporativo
+```
+
+**❌ No aparecen los proyectos**
+```
+Solución:
+1. Refrescar la página (F5)
+2. Verificar que hay proyectos creados
+3. Comprobar conexión a base de datos
+```
+
+### 📞 **Contacto Técnico**
+
+- **Desarrollador:** frantastico-rgb
+- **Repositorio:** [GitHub - crud-mixto](https://github.com/frantastico-rgb/crud-mixto)
+- **Documentación técnica:** README.md del proyecto
+- **Reportar problemas:** GitHub Issues
 
 ---
 

@@ -1,0 +1,360 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "DemoMixto - Testing Completo",
+  "collectionId": "demomixto-complete-testing",
+  "dateExported": "2025-10-21T00:00:00.000Z",
+  "version": "1.0",
+  "folders": [
+    {
+      "id": "folder-auth",
+      "name": "🔐 Authentication Tests",
+      "containerId": "",
+      "sortNum": 10000
+    },
+    {
+      "id": "folder-empleados",
+      "name": "👥 Empleados CRUD Complete",
+      "containerId": "",
+      "sortNum": 20000
+    },
+    {
+      "id": "folder-proyectos",
+      "name": "📋 Proyectos CRUD Complete",
+      "containerId": "",
+      "sortNum": 30000
+    },
+    {
+      "id": "folder-integration",
+      "name": "🔗 Integration Tests",
+      "containerId": "",
+      "sortNum": 40000
+    },
+    {
+      "id": "folder-performance",
+      "name": "⚡ Performance Tests",
+      "containerId": "",
+      "sortNum": 50000
+    },
+    {
+      "id": "folder-security",
+      "name": "🛡️ Security Tests",
+      "containerId": "",
+      "sortNum": 60000
+    }
+  ],
+  "requests": [
+    {
+      "id": "req-auth-admin-success",
+      "name": "✅ Admin Login Success",
+      "url": "http://localhost:8080/api/empleados",
+      "method": "GET",
+      "sortNum": 10100,
+      "folderId": "folder-auth",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW4="
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "res-header",
+          "custom": "content-type",
+          "action": "contains",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "id": "req-auth-user-success",
+      "name": "✅ User Login Success",
+      "url": "http://localhost:8080/api/proyectos",
+      "method": "GET",
+      "sortNum": 10200,
+      "folderId": "folder-auth",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Basic dXNlcjpwYXNzd29yZA=="
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "id": "req-auth-fail",
+      "name": "❌ Invalid Credentials",
+      "url": "http://localhost:8080/api/empleados",
+      "method": "GET",
+      "sortNum": 10300,
+      "folderId": "folder-auth",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Basic aW52YWxpZDppbnZhbGlk"
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "401"
+        }
+      ]
+    },
+    {
+      "id": "req-empleado-create-full",
+      "name": "➕ Create Empleado - Full Flow",
+      "url": "http://localhost:8080/api/empleados",
+      "method": "POST",
+      "sortNum": 20100,
+      "folderId": "folder-empleados",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW4="
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Juan Testing Automation\",\n  \"cargo\": \"QA Engineer\",\n  \"salario\": 55000,\n  \"email\": \"juan.testing@automation.com\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "res-body",
+          "custom": "$.success",
+          "action": "equal",
+          "value": "true"
+        },
+        {
+          "type": "res-body",
+          "custom": "$.data.nombre",
+          "action": "equal",
+          "value": "Juan Testing Automation"
+        },
+        {
+          "type": "set-var",
+          "custom": "empleado_id",
+          "action": "equal",
+          "value": "$.data.id"
+        }
+      ]
+    },
+    {
+      "id": "req-empleado-validation",
+      "name": "❌ Create Empleado - Validation Errors",
+      "url": "http://localhost:8080/api/empleados",
+      "method": "POST",
+      "sortNum": 20200,
+      "folderId": "folder-empleados",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW4="
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"\",\n  \"cargo\": \"Test\",\n  \"salario\": -1000,\n  \"email\": \"invalid-email\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        },
+        {
+          "type": "res-body",
+          "custom": "$.success",
+          "action": "equal",
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "id": "req-empleado-duplicate-email",
+      "name": "❌ Create Empleado - Duplicate Email",
+      "url": "http://localhost:8080/api/empleados",
+      "method": "POST",
+      "sortNum": 20300,
+      "folderId": "folder-empleados",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW4="
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Duplicate Email Test\",\n  \"cargo\": \"Tester\",\n  \"salario\": 45000,\n  \"email\": \"juan.testing@automation.com\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "409"
+        }
+      ]
+    },
+    {
+      "id": "req-integration-empleado-proyecto",
+      "name": "🔗 Create Proyecto for Empleado",
+      "url": "http://localhost:8080/api/proyectos",
+      "method": "POST",
+      "sortNum": 40100,
+      "folderId": "folder-integration",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Proyecto Integration Test\",\n  \"descripcion\": \"Testing integration between empleado and proyecto\",\n  \"empleadoId\": \"{{empleado_id}}\",\n  \"fechaInicio\": \"2025-10-21\",\n  \"completado\": false,\n  \"tareas\": [\n    {\n      \"titulo\": \"Setup integration tests\",\n      \"estado\": \"pendiente\"\n    }\n  ]\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "res-body",
+          "custom": "$.data.empleadoId",
+          "action": "equal",
+          "value": "{{empleado_id}}"
+        },
+        {
+          "type": "set-var",
+          "custom": "proyecto_id",
+          "action": "equal",
+          "value": "$.data.id"
+        }
+      ]
+    },
+    {
+      "id": "req-performance-bulk-create",
+      "name": "⚡ Bulk Create Empleados (Performance)",
+      "url": "http://localhost:8080/api/empleados/bulk",
+      "method": "POST",
+      "sortNum": 50100,
+      "folderId": "folder-performance",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW4="
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "[\n  {\"nombre\": \"Perf Test 1\", \"cargo\": \"Dev\", \"salario\": 50000, \"email\": \"perf1@test.com\"},\n  {\"nombre\": \"Perf Test 2\", \"cargo\": \"QA\", \"salario\": 45000, \"email\": \"perf2@test.com\"},\n  {\"nombre\": \"Perf Test 3\", \"cargo\": \"DevOps\", \"salario\": 60000, \"email\": \"perf3@test.com\"}\n]",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-time",
+          "custom": "",
+          "action": "less",
+          "value": "2000"
+        },
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        }
+      ]
+    },
+    {
+      "id": "req-security-sql-injection",
+      "name": "🛡️ SQL Injection Test",
+      "url": "http://localhost:8080/api/empleados/buscar",
+      "method": "GET",
+      "sortNum": 60100,
+      "folderId": "folder-security",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Basic YWRtaW46YWRtaW4="
+        }
+      ],
+      "params": [
+        {
+          "name": "termino",
+          "value": "'; DROP TABLE empleado; --"
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "not-equal",
+          "value": "500"
+        },
+        {
+          "type": "res-body",
+          "custom": "",
+          "action": "not-contains",
+          "value": "SQLException"
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "empleado_id",
+      "value": ""
+    },
+    {
+      "name": "proyecto_id", 
+      "value": ""
+    },
+    {
+      "name": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ]
+}

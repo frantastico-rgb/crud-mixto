@@ -23,6 +23,14 @@ import com.miAplicacion.demo.Entity.Tarea;
 import com.miAplicacion.demo.Service.ProyectoService;
 import com.miAplicacion.demo.Service.EmpleadoService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -31,10 +39,24 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Controlador REST para gestión de proyectos en MongoDB
- * Incluye gestión de tareas, reportes y funcionalidades de exportación
- * Enfocado en APIs REST según requerimientos del proyecto
+ * 📋 **PROYECTOS CONTROLLER** - Gestión completa de proyectos
+ * 
+ * **CARACTERÍSTICAS CLAVE PARA INTEGRACIÓN:**
+ * ✅ CRUD completo con MongoDB
+ * ✅ Gestión de tareas integrada
+ * ✅ Reportes y estadísticas avanzadas
+ * ✅ Exportación a múltiples formatos
+ * ✅ Acceso público (sin autenticación)
+ * ✅ Filtros avanzados por empleado/estado
+ * 
+ * **CASOS DE USO DE INTEGRACIÓN:**
+ * 🔗 Project Management Tools
+ * 🔗 Time Tracking Systems
+ * 🔗 Mobile Apps
+ * 🔗 Dashboard Systems
+ * 🔗 Reporting Tools
  */
+@Tag(name = "📋 Proyectos", description = "API completa para gestión de proyectos y tareas (acceso público)")
 @Controller // Usa Controller para vistas, pero principalmente REST
 @RequestMapping("/proyectos") // Todas las rutas empiezan con /proyectos
 public class ProyectoController {
