@@ -1,0 +1,1444 @@
+{
+	"info": {
+		"_postman_id": "a4b5c3d2-1234-4567-8901-123456789012",
+		"name": "CRUD Mixto - Spring Boot API",
+		"description": "Colección completa de endpoints REST para la aplicación CRUD Mixto\n\n**Tecnologías:**\n- MySQL (Empleados) - JPA Repository\n- MongoDB Atlas (Proyectos) - MongoDB Repository\n- Spring Boot 3.5.6\n- Spring Security (admin:admin, user:password)\n\n**Módulos:**\n1. **Empleados** - Gestión de empleados con MySQL\n2. **Proyectos** - Gestión de proyectos con MongoDB\n3. **Tareas** - Gestión de tareas dentro de proyectos\n4. **Reportes** - Exportación y estadísticas\n\n**Autenticación:** HTTP Basic Auth requerida para endpoints de empleados",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "admin",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Variables globales",
+					"pm.globals.set('baseUrl', 'http://localhost:8080');",
+					"",
+					"// Ejemplo de IDs para pruebas",
+					"pm.globals.set('empleadoId', '1');",
+					"pm.globals.set('proyectoId', '507f1f77bcf86cd799439011');"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "🏠 Home",
+			"item": [
+				{
+					"name": "Página de Inicio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Página de inicio que redirige a /empleados"
+					}
+				},
+				{
+					"name": "Home Alternativo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/home",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"home"
+							]
+						}
+					}
+				}
+			],
+			"description": "Endpoints del controlador Home"
+		},
+		{
+			"name": "👥 Empleados (MySQL/JPA)",
+			"item": [
+				{
+					"name": "📋 CRUD Básico",
+					"item": [
+						{
+							"name": "Listar Todos los Empleados",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/html",
+										"description": "Para vista web"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/empleados",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados"
+									]
+								},
+								"description": "Obtiene todos los empleados (vista MVC). Requiere autenticación admin."
+							}
+						},
+						{
+							"name": "Obtener Empleado por ID",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/{{empleadoId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"{{empleadoId}}"
+									]
+								},
+								"description": "Obtiene un empleado específico por ID (REST JSON)"
+							}
+						},
+						{
+							"name": "Crear Empleado",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 302) {",
+											"    pm.test('Empleado creado exitosamente', function () {",
+											"        pm.expect(pm.response.headers.get('Location')).to.include('/empleados');",
+											"    });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nombre",
+											"value": "Juan Carlos Estrada",
+											"type": "text"
+										},
+										{
+											"key": "cargo",
+											"value": "Desarrollador Senior",
+											"type": "text"
+										},
+										{
+											"key": "salario",
+											"value": "85000.00",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "juan.estrada@empresa.com",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/empleados",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados"
+									]
+								},
+								"description": "Crea un nuevo empleado. Valida email único."
+							}
+						},
+						{
+							"name": "Actualizar Empleado",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nombre",
+											"value": "Juan Carlos Estrada Modificado",
+											"type": "text"
+										},
+										{
+											"key": "cargo",
+											"value": "Lead Developer",
+											"type": "text"
+										},
+										{
+											"key": "salario",
+											"value": "95000.00",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "juan.estrada@empresa.com",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/empleados/{{empleadoId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"{{empleadoId}}"
+									]
+								},
+								"description": "Actualiza un empleado existente"
+							}
+						},
+						{
+							"name": "Eliminar Empleado (REST)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/{{empleadoId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"{{empleadoId}}"
+									]
+								},
+								"description": "Elimina un empleado (endpoint REST)"
+							}
+						}
+					]
+				},
+				{
+					"name": "🔍 Búsquedas",
+					"item": [
+						{
+							"name": "Buscar Empleados (General)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/buscar?termino=juan",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"buscar"
+									],
+									"query": [
+										{
+											"key": "termino",
+											"value": "juan",
+											"description": "Busca en nombre y cargo"
+										}
+									]
+								},
+								"description": "Búsqueda general en nombre y cargo"
+							}
+						},
+						{
+							"name": "Buscar por Nombre",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/buscar-nombre?nombre=carlos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"buscar-nombre"
+									],
+									"query": [
+										{
+											"key": "nombre",
+											"value": "carlos"
+										}
+									]
+								},
+								"description": "Búsqueda específica por nombre"
+							}
+						},
+						{
+							"name": "Buscar por Cargo",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/buscar-cargo?cargo=desarrollador",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"buscar-cargo"
+									],
+									"query": [
+										{
+											"key": "cargo",
+											"value": "desarrollador"
+										}
+									]
+								},
+								"description": "Búsqueda específica por cargo"
+							}
+						},
+						{
+							"name": "Buscar por Rango Salarial",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/buscar-salario?min=50000&max=100000",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"buscar-salario"
+									],
+									"query": [
+										{
+											"key": "min",
+											"value": "50000"
+										},
+										{
+											"key": "max",
+											"value": "100000"
+										}
+									]
+								},
+								"description": "Búsqueda por rango salarial"
+							}
+						}
+					]
+				},
+				{
+					"name": "📊 Reportes",
+					"item": [
+						{
+							"name": "Ver Reportes (Vista)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/reportes",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"reportes"
+									]
+								},
+								"description": "Vista de reportes y estadísticas"
+							}
+						},
+						{
+							"name": "Exportar CSV",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/exportar/csv",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"exportar",
+										"csv"
+									]
+								},
+								"description": "Exporta lista de empleados en formato CSV"
+							}
+						},
+						{
+							"name": "Exportar Excel",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/exportar/excel",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"exportar",
+										"excel"
+									]
+								},
+								"description": "Exporta lista de empleados en formato Excel"
+							}
+						},
+						{
+							"name": "Proyectos de Empleado",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/empleados/{{empleadoId}}/proyectos-json",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados",
+										"{{empleadoId}}",
+										"proyectos-json"
+									]
+								},
+								"description": "Obtiene proyectos asignados a un empleado (JSON)"
+							}
+						}
+					]
+				}
+			],
+			"description": "Endpoints para gestión de empleados usando MySQL/JPA. Requiere autenticación básica.",
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "admin",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "admin",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "📋 Proyectos (MongoDB)",
+			"item": [
+				{
+					"name": "📋 CRUD Básico",
+					"item": [
+						{
+							"name": "Listar Todos los Proyectos",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/html"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos"
+									]
+								},
+								"description": "Lista todos los proyectos (vista MVC). Acceso público."
+							}
+						},
+						{
+							"name": "Obtener Proyecto por ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/{{proyectoId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"{{proyectoId}}"
+									]
+								},
+								"description": "Obtiene un proyecto específico por ID (REST JSON)"
+							}
+						},
+						{
+							"name": "Crear Proyecto",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 302) {",
+											"    pm.test('Proyecto creado exitosamente', function () {",
+											"        pm.expect(pm.response.headers.get('Location')).to.include('/proyectos');",
+											"    });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nombre",
+											"value": "Sistema de Gestión Empresarial",
+											"type": "text"
+										},
+										{
+											"key": "descripcion",
+											"value": "Desarrollo de sistema integral para gestión de recursos humanos y proyectos",
+											"type": "text"
+										},
+										{
+											"key": "empleadoId",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "fechaInicio",
+											"value": "2025-01-15",
+											"type": "text"
+										},
+										{
+											"key": "completado",
+											"value": "false",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/proyectos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos"
+									]
+								},
+								"description": "Crea un nuevo proyecto"
+							}
+						},
+						{
+							"name": "Actualizar Proyecto",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nombre",
+											"value": "Sistema de Gestión Empresarial v2.0",
+											"type": "text"
+										},
+										{
+											"key": "descripcion",
+											"value": "Versión mejorada del sistema integral con nuevas funcionalidades",
+											"type": "text"
+										},
+										{
+											"key": "empleadoId",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "fechaInicio",
+											"value": "2025-01-15",
+											"type": "text"
+										},
+										{
+											"key": "completado",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/{{proyectoId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"{{proyectoId}}"
+									]
+								},
+								"description": "Actualiza un proyecto existente"
+							}
+						},
+						{
+							"name": "Eliminar Proyecto (REST)",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/{{proyectoId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"{{proyectoId}}"
+									]
+								},
+								"description": "Elimina un proyecto (endpoint REST)"
+							}
+						}
+					]
+				},
+				{
+					"name": "🔍 Búsquedas y Filtros",
+					"item": [
+						{
+							"name": "Buscar Proyectos por Nombre",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/buscar?nombre=sistema",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"buscar"
+									],
+									"query": [
+										{
+											"key": "nombre",
+											"value": "sistema"
+										}
+									]
+								},
+								"description": "Busca proyectos por nombre"
+							}
+						},
+						{
+							"name": "Filtrar por Estado",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/estado?completado=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"estado"
+									],
+									"query": [
+										{
+											"key": "completado",
+											"value": "true",
+											"description": "true para completados, false para activos"
+										}
+									]
+								},
+								"description": "Filtra proyectos por estado de completado"
+							}
+						},
+						{
+							"name": "Proyectos por Empleado",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/empleado/{{empleadoId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"empleado",
+										"{{empleadoId}}"
+									]
+								},
+								"description": "Obtiene proyectos asignados a un empleado"
+							}
+						},
+						{
+							"name": "Filtros Múltiples (Vista)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos?empleadoId={{empleadoId}}&completado=false&busqueda=sistema",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos"
+									],
+									"query": [
+										{
+											"key": "empleadoId",
+											"value": "{{empleadoId}}",
+											"description": "Filtrar por empleado"
+										},
+										{
+											"key": "completado",
+											"value": "false",
+											"description": "Filtrar por estado"
+										},
+										{
+											"key": "busqueda",
+											"value": "sistema",
+											"description": "Buscar por nombre"
+										}
+									]
+								},
+								"description": "Ejemplo de filtros múltiples combinados"
+							}
+						}
+					]
+				},
+				{
+					"name": "✅ Gestión de Tareas",
+					"item": [
+						{
+							"name": "Agregar Tarea",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Implementar autenticación\",\n    \"descripcion\": \"Desarrollar sistema de login con JWT\",\n    \"estado\": \"pendiente\",\n    \"prioridad\": \"alta\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/{{proyectoId}}/tareas",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"{{proyectoId}}",
+										"tareas"
+									]
+								},
+								"description": "Agrega una nueva tarea a un proyecto"
+							}
+						},
+						{
+							"name": "Actualizar Tarea",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Implementar autenticación JWT\",\n    \"descripcion\": \"Sistema de login completamente implementado con tokens JWT\",\n    \"estado\": \"completo\",\n    \"prioridad\": \"alta\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/{{proyectoId}}/tareas/0",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"{{proyectoId}}",
+										"tareas",
+										"0"
+									]
+								},
+								"description": "Actualiza una tarea específica por índice"
+							}
+						},
+						{
+							"name": "Eliminar Tarea",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/{{proyectoId}}/tareas/0",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"{{proyectoId}}",
+										"tareas",
+										"0"
+									]
+								},
+								"description": "Elimina una tarea específica por índice"
+							}
+						}
+					]
+				},
+				{
+					"name": "📊 Reportes y Estadísticas",
+					"item": [
+						{
+							"name": "Vista de Reportes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/reportes",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"reportes"
+									]
+								},
+								"description": "Vista de reportes y estadísticas de proyectos"
+							}
+						},
+						{
+							"name": "Estadísticas (API)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/estadisticas",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"estadisticas"
+									]
+								},
+								"description": "Obtiene estadísticas generales en formato JSON"
+							}
+						},
+						{
+							"name": "Exportar Proyectos CSV",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/exportar/csv",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"exportar",
+										"csv"
+									]
+								},
+								"description": "Exporta proyectos en formato CSV"
+							}
+						},
+						{
+							"name": "Exportar Proyectos CSV (Por Empleado)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/exportar/csv?empleadoId={{empleadoId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"exportar",
+										"csv"
+									],
+									"query": [
+										{
+											"key": "empleadoId",
+											"value": "{{empleadoId}}"
+										}
+									]
+								},
+								"description": "Exporta proyectos de un empleado específico en CSV"
+							}
+						},
+						{
+							"name": "Exportar Proyectos Excel",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/exportar/excel",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"exportar",
+										"excel"
+									]
+								},
+								"description": "Exporta proyectos en formato Excel"
+							}
+						},
+						{
+							"name": "Reporte Detallado (JSON)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/exportar/detallado",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"exportar",
+										"detallado"
+									]
+								},
+								"description": "Reporte detallado con información completa de proyectos, empleados y estadísticas"
+							}
+						}
+					]
+				}
+			],
+			"description": "Endpoints para gestión de proyectos usando MongoDB. Acceso público (sin autenticación requerida)."
+		},
+		{
+			"name": "🧪 Pruebas de Integración",
+			"item": [
+				{
+					"name": "Flujo Completo: Crear Empleado → Proyecto → Tarea",
+					"item": [
+						{
+							"name": "1. Crear Empleado de Prueba",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 302) {",
+											"    pm.test('Empleado creado exitosamente', function () {",
+											"        pm.expect(pm.response.headers.get('Location')).to.include('/empleados');",
+											"    });",
+											"    ",
+											"    // Guardar email para siguientes pruebas",
+											"    pm.globals.set('emailPrueba', pm.request.body.urlencoded.toObject().email);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "admin",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nombre",
+											"value": "María González Test",
+											"type": "text"
+										},
+										{
+											"key": "cargo",
+											"value": "QA Engineer",
+											"type": "text"
+										},
+										{
+											"key": "salario",
+											"value": "75000.00",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "maria.test@empresa.com",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/empleados",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"empleados"
+									]
+								},
+								"description": "Paso 1: Crear empleado para pruebas"
+							}
+						},
+						{
+							"name": "2. Crear Proyecto de Prueba",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 302) {",
+											"    pm.test('Proyecto creado exitosamente', function () {",
+											"        pm.expect(pm.response.headers.get('Location')).to.include('/proyectos');",
+											"    });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nombre",
+											"value": "Proyecto de Testing Automatizado",
+											"type": "text"
+										},
+										{
+											"key": "descripcion",
+											"value": "Implementación de suite completa de pruebas automatizadas",
+											"type": "text"
+										},
+										{
+											"key": "empleadoId",
+											"value": "{{empleadoId}}",
+											"type": "text"
+										},
+										{
+											"key": "fechaInicio",
+											"value": "2025-10-15",
+											"type": "text"
+										},
+										{
+											"key": "completado",
+											"value": "false",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/proyectos",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos"
+									]
+								},
+								"description": "Paso 2: Crear proyecto asignado al empleado"
+							}
+						},
+						{
+							"name": "3. Agregar Tareas al Proyecto",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Tarea agregada exitosamente', function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+											"});",
+											"",
+											"pm.test('Respuesta contiene proyecto actualizado', function () {",
+											"    const jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('tareas');",
+											"    pm.expect(jsonData.tareas).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Configurar Selenium Grid\",\n    \"descripcion\": \"Instalar y configurar Selenium Grid para pruebas distribuidas\",\n    \"estado\": \"en_progreso\",\n    \"prioridad\": \"alta\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/proyectos/{{proyectoId}}/tareas",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"proyectos",
+										"{{proyectoId}}",
+										"tareas"
+									]
+								},
+								"description": "Paso 3: Agregar tarea al proyecto creado"
+							}
+						}
+					]
+				}
+			],
+			"description": "Pruebas de integración que combinan múltiples endpoints"
+		}
+	]
+}

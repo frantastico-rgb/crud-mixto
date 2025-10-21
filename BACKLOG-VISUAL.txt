@@ -1,0 +1,68 @@
+📋 BACKLOG DE HISTORIAS DE USUARIO - CRUD MIXTO
+═══════════════════════════════════════════════════════════════════════════════════
+
+┌─────┬──────────────────────┬─────────────────────────────────────────────────────┬──────────┬─────────┬────────────┬─────────────────┐
+│ ID  │ Historia/Tarea       │ Descripción                                         │ Prioridad│ Sprint  │ Estado     │ Responsable     │
+├─────┼──────────────────────┼─────────────────────────────────────────────────────┼──────────┼─────────┼────────────┼─────────────────┤
+│HU-01│Login y roles         │Como admin, quiero ingresar con credenciales        │ Crítica  │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-02│Registrar empleado    │Como admin, quiero registrar empleados en MySQL     │ Alta     │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-03│Buscar empleados      │Como admin, quiero buscar por nombre/cargo          │ Media    │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-04│Actualizar empleado   │Como admin, quiero actualizar información           │ Alta     │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-05│Eliminar empleado     │Como admin, quiero eliminar empleados               │ Media    │Sprint 1 │Finalizada  │Equipo Backend   │
+├─────┼──────────────────────┼─────────────────────────────────────────────────────┼──────────┼─────────┼────────────┼─────────────────┤
+│HU-06│Crear proyecto        │Como gerente, quiero crear proyectos en MongoDB     │ Alta     │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-07│Filtrar proyectos     │Como gerente, quiero filtrar por empleado/estado    │ Alta     │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-08│Ver mis proyectos     │Como empleado, quiero ver mis proyectos asignados   │ Alta     │Sprint 2 │En progreso │Equipo Frontend  │
+│HU-09│Agregar tareas        │Como empleado, quiero agregar tareas a proyectos    │ Media    │Sprint 2 │Pendiente   │Equipo Backend   │
+│HU-10│Cambiar estado tareas │Como empleado, quiero cambiar estado de tareas      │ Media    │Sprint 2 │Pendiente   │Equipo Frontend  │
+├─────┼──────────────────────┼─────────────────────────────────────────────────────┼──────────┼─────────┼────────────┼─────────────────┤
+│HU-11│Exportar empleados    │Como admin, quiero exportar reportes CSV/Excel      │ Baja     │Sprint 3 │Finalizada  │Equipo Backend   │
+│HU-12│Exportar proyectos    │Como gerente, quiero exportar reportes de proyectos │ Baja     │Sprint 3 │Finalizada  │Equipo Backend   │
+│HU-13│Autenticación sistema │Como usuario, quiero autenticarme con credenciales  │ Crítica  │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-14│Acceso público        │Como usuario, quiero acceder a proyectos sin login  │ Alta     │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-15│Restricción empleados │Como admin, quiero restringir acceso a empleados    │ Crítica  │Sprint 1 │Finalizada  │Equipo Backend   │
+├─────┼──────────────────────┼─────────────────────────────────────────────────────┼──────────┼─────────┼────────────┼─────────────────┤
+│HU-16│Redirección automática│Como usuario, quiero redirección a página principal │ Media    │Sprint 2 │Finalizada  │Equipo Frontend  │
+│HU-17│Navegación módulos    │Como usuario, quiero navegar entre módulos          │ Media    │Sprint 2 │En progreso │Equipo Frontend  │
+│HU-18│API REST empleados    │Como dev, quiero APIs REST para empleados           │ Alta     │Sprint 2 │Finalizada  │Equipo Backend   │
+│HU-19│API REST proyectos    │Como dev, quiero APIs REST para proyectos           │ Alta     │Sprint 2 │Finalizada  │Equipo Backend   │
+│HU-20│Manejo errores        │Como usuario, quiero mensajes de error claros       │ Media    │Sprint 2 │Pendiente   │Equipo Frontend  │
+├─────┼──────────────────────┼─────────────────────────────────────────────────────┼──────────┼─────────┼────────────┼─────────────────┤
+│HU-21│Validación datos      │Como admin, quiero validación de datos de entrada   │ Alta     │Sprint 1 │En progreso │Equipo Backend   │
+│HU-22│Integridad referencial│Como gerente, quiero consistencia empleado-proyecto │ Crítica  │Sprint 1 │Finalizada  │Equipo Backend   │
+│HU-23│Vista consolidada     │Como usuario, quiero info consolidada empleado+proy │ Alta     │Sprint 3 │Pendiente   │Equipo Full-Stack│
+│HU-24│Formularios intuitivos│Como usuario, quiero formularios fáciles de usar    │ Media    │Sprint 2 │En progreso │Equipo Frontend  │
+│HU-25│Confirmaciones elim.  │Como usuario, quiero confirmación antes de eliminar │ Alta     │Sprint 2 │Finalizada  │Equipo Frontend  │
+├─────┼──────────────────────┼─────────────────────────────────────────────────────┼──────────┼─────────┼────────────┼─────────────────┤
+│HU-26│Health checks BD      │Como sysadmin, quiero monitorear estado de BD       │ Media    │Sprint 3 │Pendiente   │Equipo DevOps    │
+│HU-27│Logs auditoría        │Como sysadmin, quiero logs para auditoría           │ Baja     │Sprint 4 │Pendiente   │Equipo Backend   │
+└─────┴──────────────────────┴─────────────────────────────────────────────────────┴──────────┴─────────┴────────────┴─────────────────┘
+
+📊 MÉTRICAS DEL BACKLOG
+═══════════════════════════════════════════════════════════════════════════════════
+
+🎯 Por Prioridad:
+├─ Crítica: 4 historias (15%) 🔴
+├─ Alta: 10 historias (37%) 🟡  
+├─ Media: 10 historias (37%) 🟢
+└─ Baja: 3 historias (11%) ⚪
+
+📈 Por Estado:
+├─ Finalizada: 12 historias (44%) ✅
+├─ En progreso: 5 historias (19%) 🔄
+└─ Pendiente: 10 historias (37%) ⏳
+
+🏃‍♂️ Por Sprint:
+├─ Sprint 1: 10 historias (Base del sistema)
+├─ Sprint 2: 8 historias (UX y APIs avanzadas)
+├─ Sprint 3: 4 historias (Reportes y consolidación)
+└─ Sprint 4: 1 historia (Auditoría)
+
+👥 Por Equipo:
+├─ Backend: 15 historias (56%)
+├─ Frontend: 7 historias (26%)
+├─ Full-Stack: 1 historia (4%)
+└─ DevOps: 1 historia (4%)
+
+📏 Estimación Total: 62 puntos de historia
+└─ Promedio por historia: 2.3 puntos
