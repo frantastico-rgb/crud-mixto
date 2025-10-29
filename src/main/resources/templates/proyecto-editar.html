@@ -366,14 +366,47 @@
                         </div>
                     </div>
                     
-                    <!-- Información de tareas -->
-                    <div class="form-group" th:if="${proyecto.tareas != null}">
-                        <label class="form-label">📝 Información de Tareas</label>
-                        <div class="current-value">
-                            <strong>Tareas totales:</strong> <span th:text="${proyecto.totalTareas}">0</span><br>
+                    <!-- Editor de tareas embebidas -->
+                    <div class="form-group">
+                        <label class="form-label">📝 Tareas del Proyecto</label>
+
+                        <div class="help-text">Agregue, edite o elimine tareas. El campo <strong>Estado</strong> usa los valores del Enum.</div>
+
+                        <!-- Contador rápido -->
+                        <div class="current-value" style="margin-top:10px;">
+                            <strong>Tareas totales:</strong> <span th:text="${proyecto.totalTareas}">0</span>
+                            &nbsp;•&nbsp;
                             <strong>Tareas completadas:</strong> <span th:text="${proyecto.tareasCompletadas}">0</span>
                         </div>
-                        <div class="help-text">La gestión detallada de tareas se realiza desde la vista principal</div>
+
+                        <!-- Lista de tareas existentes -->
+                        <div id="tareas-list" style="margin-top:15px;">
+                            <div th:each="tarea, iter : ${proyecto.tareas}" style="margin-bottom:12px; border-bottom:1px dashed #eee; padding-bottom:8px;">
+                                <input type="hidden" th:name="${'tareas[' + iter.index + ']._index'}" th:value="${iter.index}"/>
+
+                                <label class="form-label" th:text="${'Tarea ' + (iter.index + 1)}"></label>
+                                <input type="text" th:name="${'tareas[' + iter.index + '].titulo'}" class="form-input" th:value="${tarea.titulo}" placeholder="Título de la tarea" required />
+
+                                <textarea th:name="${'tareas[' + iter.index + '].descripcion'}" class="form-textarea" placeholder="Descripción (opcional)" th:text="${tarea.descripcion}"></textarea>
+
+                                <label class="form-label" style="margin-top:8px;">Estado</label>
+                                <select th:name="${'tareas[' + iter.index + '].estado'}" class="form-select">
+                                    <option th:value="'PENDIENTE'" th:selected="${tarea.estado != null and tarea.estado.name() == 'PENDIENTE'}">Pendiente</option>
+                                    <option th:value="'EN_PROGRESO'" th:selected="${tarea.estado != null and tarea.estado.name() == 'EN_PROGRESO'}">En progreso</option>
+                                    <option th:value="'EN_REVISION'" th:selected="${tarea.estado != null and tarea.estado.name() == 'EN_REVISION'}">En revisión</option>
+                                    <option th:value="'COMPLETADA'" th:selected="${tarea.estado != null and tarea.estado.name() == 'COMPLETADA'}">Completada</option>
+                                    <option th:value="'CANCELADA'" th:selected="${tarea.estado != null and tarea.estado.name() == 'CANCELADA'}">Cancelada</option>
+                                </select>
+
+                                <div style="margin-top:8px; display:flex; gap:8px;">
+                                    <button type="button" class="btn btn-danger" onclick="eliminarTarea(this)">Eliminar tarea</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:12px;">
+                            <button type="button" class="btn btn-primary" onclick="agregarTarea()">➕ Agregar tarea</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -437,6 +470,109 @@
                 document.body.appendChild(form);
                 form.submit();
             }
+        }
+
+        // =========================
+        // Gestión dinámica de tareas
+        // =========================
+        function eliminarTarea(btn) {
+            const tareaDiv = btn.closest('div[th\:each]') || btn.closest('div');
+            if (!tareaDiv) return;
+            if (confirm('¿Eliminar esta tarea?')) {
+                tareaDiv.remove();
+                // Reindexar campos para que Spring MVC pueda mapear correctamente
+                reindexTareas();
+            }
+        }
+
+        function agregarTarea() {
+            const list = document.getElementById('tareas-list');
+            const index = list.querySelectorAll('[th\\:each]').length || list.children.length;
+
+            // Crear contenedor simple replicando la estructura mínima
+            const container = document.createElement('div');
+            container.style.marginBottom = '12px';
+            container.style.borderBottom = '1px dashed #eee';
+            container.style.paddingBottom = '8px';
+
+            const label = document.createElement('label');
+            label.className = 'form-label';
+            label.textContent = 'Tarea ' + (index + 1);
+
+            const titulo = document.createElement('input');
+            titulo.type = 'text';
+            titulo.name = `tareas[${index}].titulo`;
+            titulo.className = 'form-input';
+            titulo.placeholder = 'Título de la tarea';
+
+            const desc = document.createElement('textarea');
+            desc.name = `tareas[${index}].descripcion`;
+            desc.className = 'form-textarea';
+            desc.placeholder = 'Descripción (opcional)';
+
+            const estadoLabel = document.createElement('label');
+            estadoLabel.className = 'form-label';
+            estadoLabel.style.marginTop = '8px';
+            estadoLabel.textContent = 'Estado';
+
+            const select = document.createElement('select');
+            select.name = `tareas[${index}].estado`;
+            select.className = 'form-select';
+            const opciones = [
+                ['PENDIENTE','Pendiente'],
+                ['EN_PROGRESO','En progreso'],
+                ['EN_REVISION','En revisión'],
+                ['COMPLETADA','Completada'],
+                ['CANCELADA','Cancelada']
+            ];
+            opciones.forEach(opt => {
+                const o = document.createElement('option');
+                o.value = opt[0];
+                o.textContent = opt[1];
+                select.appendChild(o);
+            });
+
+            const btns = document.createElement('div');
+            btns.style.marginTop = '8px';
+            btns.style.display = 'flex';
+            btns.style.gap = '8px';
+
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'btn btn-danger';
+            delBtn.textContent = 'Eliminar tarea';
+            delBtn.onclick = function() { if (confirm('¿Eliminar esta tarea?')) { container.remove(); reindexTareas(); } };
+
+            btns.appendChild(delBtn);
+
+            container.appendChild(label);
+            container.appendChild(titulo);
+            container.appendChild(desc);
+            container.appendChild(estadoLabel);
+            container.appendChild(select);
+            container.appendChild(btns);
+
+            list.appendChild(container);
+            reindexTareas();
+        }
+
+        function reindexTareas(){
+            const list = document.getElementById('tareas-list');
+            const children = Array.from(list.children);
+            children.forEach((child, idx) => {
+                // actualizar nombres de inputs
+                const inputs = child.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    if (input.name) {
+                        const nameParts = input.name.split('.');
+                        const field = nameParts[nameParts.length - 1];
+                        input.name = `tareas[${idx}].${field}`;
+                    }
+                });
+                // actualizar label
+                const label = child.querySelector('.form-label');
+                if (label) label.textContent = 'Tarea ' + (idx + 1);
+            });
         }
     </script>
 </body>

@@ -82,7 +82,7 @@ public class Proyecto {
     public long getTareasCompletadas() {
         if (tareas == null) return 0;
         return tareas.stream()
-                    .filter(tarea -> "completo".equals(tarea.getEstado()))
+                    .filter(tarea -> tarea.getEstado() == Tarea.EstadoTarea.COMPLETADA)
                     .count();
     }
     

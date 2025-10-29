@@ -37,6 +37,9 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.beans.PropertyEditorSupport;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 /**
  * 📋 **PROYECTOS CONTROLLER** - Gestión completa de proyectos
@@ -66,6 +69,26 @@ public class ProyectoController {
     
     @Autowired
     private EmpleadoService empleadoService;
+
+    /**
+     * InitBinder para convertir Strings del formulario a EstadoTarea.
+     * Esto permite aceptar valores legacy como "completo" o "en proceso".
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Tarea.EstadoTarea.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                setValue(Tarea.EstadoTarea.fromString(text));
+            }
+
+            @Override
+            public String getAsText() {
+                Object v = getValue();
+                return v != null ? v.toString() : null;
+            }
+        });
+    }
 
     /**
      * Crea un nuevo proyecto (POST desde formulario web)
@@ -362,7 +385,7 @@ public class ProyectoController {
         
         long tareasCompletadas = todosLosProyectos.stream()
             .flatMap(p -> p.getTareas().stream())
-            .filter(t -> "completo".equals(t.getEstado()))
+            .filter(t -> t.getEstado() == Tarea.EstadoTarea.COMPLETADA)
             .count();
             
         estadisticas.put("totalTareas", totalTareas);
@@ -392,7 +415,7 @@ public class ProyectoController {
         
         for (Proyecto proyecto : proyectos) {
             long tareasCompletadas = proyecto.getTareas().stream()
-                .filter(t -> "completo".equals(t.getEstado()))
+                .filter(t -> t.getEstado() == Tarea.EstadoTarea.COMPLETADA)
                 .count();
             
             csv.append(String.format("\"%s\",\"%s\",\"%s\",%s,\"%s\",%s,%d,%d\n",
@@ -463,7 +486,7 @@ public class ProyectoController {
                 org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
                 
                 long tareasCompletadas = proyecto.getTareas().stream()
-                    .filter(tarea -> "completo".equals(tarea.getEstado()))
+                    .filter(tarea -> tarea.getEstado() == Tarea.EstadoTarea.COMPLETADA)
                     .count();
                 
                 row.createCell(0).setCellValue(proyecto.getId());
@@ -522,7 +545,7 @@ public class ProyectoController {
             // Estadísticas de tareas
             long tareasTotal = proyecto.getTareas().size();
             long tareasCompletadas = proyecto.getTareas().stream()
-                .filter(t -> "completo".equals(t.getEstado()))
+                .filter(t -> t.getEstado() == Tarea.EstadoTarea.COMPLETADA)
                 .count();
             
             item.put("estadisticasTareas", Map.of(

@@ -89,6 +89,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Bean Validation (Hibernate Validator) - proporciona el proveedor JSR-380 para evitar warnings en tests -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
          <!-- H2 -->
         <dependency>
             <groupId>com.h2database</groupId>

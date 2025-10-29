@@ -400,7 +400,7 @@ public class ProyectoRestController {
             
             long tareasCompletadas = todosLosProyectos.stream()
                 .flatMap(p -> p.getTareas().stream())
-                .filter(t -> "completo".equals(t.getEstado()))
+                .filter(t -> t.getEstado() == Tarea.EstadoTarea.COMPLETADA)
                 .count();
                 
             estadisticas.put("totalTareas", totalTareas);
