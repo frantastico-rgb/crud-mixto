@@ -88,7 +88,7 @@ class EmpleadoServiceTest {
         assertNotNull(resultado);
         assertEquals("Juan Updated", resultado.getNombre());
         assertEquals("Senior QA", resultado.getCargo());
-        assertEquals(60000.0, resultado.getSalario());
+        assertEquals(java.math.BigDecimal.valueOf(60000.0), resultado.getSalario());
         verify(empleadoRepository, times(1)).findById(1L);
         verify(empleadoRepository, times(1)).save(any(Empleado.class));
     }

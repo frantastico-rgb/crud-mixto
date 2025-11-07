@@ -4,8 +4,6 @@ package com.miAplicacion.demo.Entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Clase que representa una tarea dentro de un proyecto.
@@ -50,7 +48,7 @@ public class Tarea {
 
     // Compatibilidad: aceptar también un setter que reciba String (por ejemplo desde formularios antiguos)
     public void setEstado(String estadoStr) {
-        this.estado = EstadoTarea.from(estadoStr);
+        this.estado = EstadoTarea.fromString(estadoStr);
     }
 
     public String getDescripcion() { return descripcion; }
@@ -80,50 +78,26 @@ public class Tarea {
         EN_REVISION,
         COMPLETADA,
         CANCELADA;
-        ;
 
         @JsonCreator
         public static EstadoTarea fromString(String value) {
             if (value == null) return null;
             String s = value.trim().toLowerCase();
-            // Normalizar variantes comunes en español/inglés
+
+            // Heurísticas comunes en español/inglés
             if (s.contains("complet")) return COMPLETADA; // completo, completada
             if (s.contains("pend")) return PENDIENTE; // pendiente
             if (s.contains("rev")) return EN_REVISION; // revision, en_revision
             if (s.contains("cancel")) return CANCELADA; // cancelada
-            if (s.contains("progres") || s.contains("proceso") || s.contains("progreso") ) return EN_PROGRESO; // en progreso / en proceso
+            if (s.contains("progres") || s.contains("proceso") || s.contains("progreso")) return EN_PROGRESO; // en progreso / en proceso
 
-            // Try direct name match (allow underscores/hyphens/space)
+            // Intentar match por nombre normalizado
             String normalized = value.trim().toUpperCase().replace(" ", "_").replace('-', '_');
             try {
                 return EstadoTarea.valueOf(normalized);
             } catch (IllegalArgumentException ex) {
-                // Fallback: return PENDIENTE para valores desconocidos
+                // Fallback: marcar como pendiente para valores desconocidos
                 return PENDIENTE;
-            }
-        }
-
-        @JsonValue
-        public String toValue() {
-            return this.name();
-        }
-
-
-    // Setter que acepta String para binding desde formularios o documentos antiguos
-    public void setEstado(String estado) {
-        this.estado = EstadoTarea.fromString(estado);
-    }
-        @JsonCreator
-        public static EstadoTarea from(String value) {
-            if (value == null) return null;
-            String v = value.trim().toUpperCase().replace(" ", "_").replace("-", "_");
-            // Accept common Spanish inputs
-            if (v.equals("EN_PROCESO") || v.equals("ENPROCESO")) v = "EN_PROGRESO";
-            if (v.equals("COMPLETO")) v = "COMPLETADA";
-            try {
-                return EstadoTarea.valueOf(v);
-            } catch (IllegalArgumentException ex) {
-                return null; // unknown value -> null (caller can handle)
             }
         }
 
