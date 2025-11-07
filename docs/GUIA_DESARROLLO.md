@@ -175,7 +175,84 @@ public class Proyecto {
 }
 ```
 
-#### **2. Service Layer Pattern**
+#### **2. Enum Pattern - EstadoTarea (Task State Management)**
+
+```java
+// ✅ ENUM PATTERN - Type-safe task states
+public enum EstadoTarea {
+    PENDIENTE,      // Nueva tarea creada
+    EN_PROGRESO,    // Tarea siendo trabajada
+    EN_REVISION,    // Tarea completada, esperando revisión
+    COMPLETADA,     // Tarea finalizada y aprobada
+    CANCELADA;      // Tarea cancelada o descartada
+
+    // ✅ JSON COMPATIBILITY PATTERN
+    @JsonCreator
+    public static EstadoTarea fromString(String value) {
+        if (value == null) return null;
+        String s = value.trim().toLowerCase();
+
+        // Heurísticas para compatibilidad con strings legacy
+        if (s.contains("complet")) return COMPLETADA; // "completo", "completada"
+        if (s.contains("pend")) return PENDIENTE;     // "pendiente"
+        if (s.contains("rev")) return EN_REVISION;    // "revision", "en_revision"
+        if (s.contains("cancel")) return CANCELADA;   // "cancelada"
+        if (s.contains("progres") || s.contains("proceso")) return EN_PROGRESO;
+
+        // Fallback: intentar match exacto
+        try {
+            return EstadoTarea.valueOf(value.trim().toUpperCase().replace(" ", "_"));
+        } catch (IllegalArgumentException ex) {
+            return PENDIENTE; // Default para valores desconocidos
+        }
+    }
+
+    @JsonValue
+    public String toValue() {
+        return this.name();
+    }
+}
+
+// ✅ EMBEDDED DOCUMENT PATTERN
+@Data
+public class Tarea {
+    private String titulo;
+    private EstadoTarea estado;
+    private String descripcion;
+    private Long empleadoId;
+    private LocalDate fechaInicio;
+    private LocalDate fechaVencimiento;
+    
+    // ✅ FORM BINDING COMPATIBILITY
+    public void setEstado(String estadoStr) {
+        this.estado = EstadoTarea.fromString(estadoStr);
+    }
+}
+
+// ✅ CONTROLLER BINDING PATTERN
+@Controller
+public class ProyectoController {
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        // PropertyEditor para formularios web
+        binder.registerCustomEditor(EstadoTarea.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                setValue(EstadoTarea.fromString(text));
+            }
+            
+            @Override
+            public String getAsText() {
+                Object value = getValue();
+                return value != null ? value.toString() : "";
+            }
+        });
+    }
+}
+```
+
+#### **3. Service Layer Pattern**
 
 ```java
 @Service
@@ -277,6 +354,68 @@ public interface ProyectoRepository extends MongoRepository<Proyecto, String> {
     List<Proyecto> findByTareaEstado(String estado);
 }
 ```
+
+---
+
+### 🎯 **CASO DE ESTUDIO: GESTIÓN DE TAREAS**
+
+#### **Problema Original**
+El sistema mostraba proyectos sin información de tareas en el dashboard de reportes:
+- ⚠️ "Sin tareas asignadas" en todos los proyectos
+- ⚠️ Estados de tarea como strings inconsistentes ("completo", "pendiente", etc.)
+- ⚠️ Falta de validación de estados válidos
+- ⚠️ Dificultad para filtrar y contar tareas por estado
+
+#### **Solución Implementada: EstadoTarea Enum**
+
+**1. Type Safety y Validación:**
+```java
+// ❌ ANTES: String states (propenso a errores)
+tarea.setEstado("completo");     // ¿"completo" o "completado"?
+tarea.setEstado("en proceso");   // ¿"en_proceso" o "en progreso"?
+
+// ✅ DESPUÉS: Enum states (type-safe)
+tarea.setEstado(EstadoTarea.COMPLETADA);  // Compiletime safety
+tarea.setEstado(EstadoTarea.EN_PROGRESO); // IDE autocomplete
+```
+
+**2. Backward Compatibility:**
+```java
+// ✅ Legacy API calls still work
+@JsonCreator
+public static EstadoTarea fromString(String value) {
+    // "completo" → COMPLETADA
+    // "pendiente" → PENDIENTE
+    // "en progreso" → EN_PROGRESO
+}
+```
+
+**3. Form Binding:**
+```java
+// ✅ Web forms can submit strings
+@InitBinder
+public void initBinder(WebDataBinder binder) {
+    binder.registerCustomEditor(EstadoTarea.class, new PropertyEditorSupport() {
+        // HTML select "COMPLETADA" → EstadoTarea.COMPLETADA
+    });
+}
+```
+
+**4. Consistent Counting:**
+```java
+// ✅ Reliable task statistics
+public long getTareasCompletadas() {
+    return tareas.stream()
+               .filter(t -> t.getEstado() == EstadoTarea.COMPLETADA)
+               .count();
+}
+```
+
+#### **Resultado: Dashboard Funcional**
+- ✅ Tareas se muestran correctamente en reportes
+- ✅ Estados consistentes en toda la aplicación
+- ✅ Filtros y estadísticas confiables
+- ✅ Compatibilidad con APIs legacy mantenida
 
 ---
 
