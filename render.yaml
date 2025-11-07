@@ -1,0 +1,58 @@
+# Render deployment configuration
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: demomixto
+    runtime: docker
+    plan: free  # starter plan for production
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    
+    # Environment Variables
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: PORT
+        value: 8080
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        generateValue: true  # Render generará password seguro
+      - key: MONGODB_URI
+        value: mongodb+srv://fullsena:Sena2025@servidorfull.87eqvrg.mongodb.net/empresa?retryWrites=true&w=majority&appName=SERVIDORFULL
+      - key: MAX_THREADS
+        value: 10
+      - key: DB_POOL_SIZE
+        value: 5
+    
+    # Health Check
+    healthCheckPath: /actuator/health
+    
+    # Build Configuration
+    buildCommand: echo "Building with Docker"
+    startCommand: java $JAVA_OPTS -jar app.jar
+    
+    # Scaling Configuration
+    numInstances: 1
+    
+    # Custom Headers for Security
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+
+# Optional: Database service (if needed)
+# databases:
+#   - name: demomixto-db
+#     plan: free
+#     databaseName: empresa
+#     user: demomixto
