@@ -191,4 +191,12 @@ public class ProyectoService {
     public void eliminarProyecto(String id) {
         proyectoRepository.deleteById(id);
     }
+    
+    /**
+     * ⚠️ MÉTODO TEMPORAL - Elimina todos los proyectos (para reinicializar datos de ejemplo)
+     * Solo debe usarse para demos o reset de datos
+     */
+    public void eliminarTodosProyectos() {
+        proyectoRepository.deleteAll();
+    }
 }

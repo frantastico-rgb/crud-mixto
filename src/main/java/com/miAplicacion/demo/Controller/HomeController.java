@@ -28,4 +28,13 @@ public class HomeController {
     public String home() {
         return "redirect:/empleados";
     }
+    
+    /**
+     * Página de login personalizada
+     * GET /login
+     */
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }

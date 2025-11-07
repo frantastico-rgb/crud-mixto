@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>🔐 Login - DemoMixto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            padding: 40px 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .login-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .login-header p {
+            opacity: 0.9;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .login-form {
+            padding: 40px;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            border-left-color: #0dcaf0;
+            color: #055160;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fafbfc;
+            position: relative;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #e67e22;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon::before {
+            content: attr(data-icon);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            z-index: 1;
+            pointer-events: none;
+            font-size: 18px;
+        }
+        
+        .input-icon .form-input {
+            padding-left: 50px;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn-login:hover {
+            background: linear-gradient(135deg, #d35400, #a04000);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(230, 126, 34, 0.3);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        .login-footer {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .login-footer a {
+            color: #e67e22;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .login-footer a:hover {
+            color: #d35400;
+        }
+        
+        .demo-credentials {
+            background: rgba(230, 126, 34, 0.1);
+            border: 1px solid rgba(230, 126, 34, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .demo-credentials h4 {
+            color: #e67e22;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .demo-credentials code {
+            background: rgba(230, 126, 34, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d35400;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .login-header, .login-form, .login-footer {
+                padding: 25px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
+        }
+        
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .loading .btn-login {
+            background: #95a5a6;
+        }
+        
+        .loading .btn-login::after {
+            content: '🔄';
+            margin-left: 10px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🔐 Iniciar Sesión</h1>
+            <p>Acceso a la Gestión de Empleados</p>
+        </div>
+        
+        <div class="login-form">
+            <!-- Mostrar errores de login -->
+            <div th:if="${param.error}" class="alert alert-error">
+                <strong>⚠️ Error de Autenticación</strong><br>
+                Usuario o contraseña incorrectos. Inténtelo nuevamente.
+            </div>
+            
+            <!-- Mensaje informativo -->
+            <div th:if="${param.logout}" class="alert alert-info">
+                <strong>✅ Sesión Cerrada</strong><br>
+                Ha cerrado sesión exitosamente.
+            </div>
+            
+            <!-- Credenciales de demostración -->
+            <div class="demo-credentials">
+                <h4>🎯 Credenciales de Prueba:</h4>
+                <p><strong>Usuario:</strong> <code>admin</code></p>
+                <p><strong>Contraseña:</strong> <code>admin</code></p>
+            </div>
+            
+            <form th:action="@{/login}" method="post" id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">👤 Usuario</label>
+                    <div class="input-icon" data-icon="👤">
+                        <input type="text" 
+                               id="username" 
+                               name="username" 
+                               class="form-input" 
+                               placeholder="Ingrese su usuario" 
+                               value="admin"
+                               required 
+                               autocomplete="username">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">🔒 Contraseña</label>
+                    <div class="input-icon" data-icon="🔒">
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               class="form-input" 
+                               placeholder="Ingrese su contraseña" 
+                               value="admin"
+                               required 
+                               autocomplete="current-password">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    🚀 Acceder al Sistema
+                </button>
+            </form>
+        </div>
+        
+        <div class="login-footer">
+            <p>
+                <a href="/proyectos">📋 Ver Proyectos (Acceso Público)</a>
+            </p>
+            <p style="margin-top: 10px; font-size: 12px; color: #6c757d;">
+                DemoMixto - Sistema de Gestión Empresarial
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-focus en el campo de usuario
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('username').focus();
+        });
+        
+        // Efecto de loading al enviar
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            document.body.classList.add('loading');
+        });
+        
+        // Shortcuts de teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && (e.target.id === 'username' || e.target.id === 'password')) {
+                document.getElementById('loginForm').submit();
+            }
+        });
+        
+        // Llenar credenciales demo rápidamente (desarrollo)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                document.getElementById('username').value = 'admin';
+                document.getElementById('password').value = 'admin';
+                document.getElementById('password').focus();
+            }
+        });
+    </script>
+</body>
+</html>

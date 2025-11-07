@@ -36,10 +36,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.beans.PropertyEditorSupport;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import java.util.Arrays;
 
 /**
  * 📋 **PROYECTOS CONTROLLER** - Gestión completa de proyectos
@@ -559,5 +561,254 @@ public class ProyectoController {
         }).collect(Collectors.toList());
         
         return ResponseEntity.ok(reporteDetallado);
+    }
+    
+    /**
+     * 🔄 **ENDPOINT TEMPORAL** - Inicializar datos de ejemplo con estados expandidos
+     * 
+     * ⚠️ SOLO PARA DEMO - Borra todos los proyectos existentes y crea nuevos con estados expandidos
+     * 
+     * **URL:** GET /proyectos/init-data
+     * **Respuesta:** JSON con proyectos creados
+     */
+    @GetMapping("/init-data")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> inicializarDatosEjemplo() {
+        try {
+            // Limpiar datos existentes
+            proyectoService.eliminarTodosProyectos();
+            
+            // Crear proyectos de ejemplo con estados expandidos
+            List<Proyecto> proyectosCreados = crearProyectosEjemplo();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Datos de ejemplo inicializados correctamente");
+            response.put("proyectosCreados", proyectosCreados.size());
+            response.put("estadosDisponibles", Arrays.asList("PENDIENTE", "EN_PROGRESO", "EN_REVISION", "COMPLETADA", "CANCELADA"));
+            response.put("redirect", "/proyectos");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "Error al inicializar datos: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+    
+    /**
+     * Crear proyectos de ejemplo con todos los estados de tareas
+     */
+    private List<Proyecto> crearProyectosEjemplo() {
+        List<Proyecto> proyectos = new java.util.ArrayList<>();
+        
+        // Proyecto 1: Sistema de Inventario
+        Proyecto proyecto1 = new Proyecto();
+        proyecto1.setNombre("Sistema de Gestión de Inventario");
+        proyecto1.setDescripcion("Desarrollo de un sistema completo para gestionar inventarios de productos con reportes en tiempo real");
+        proyecto1.setEmpleadoId(1L);
+        proyecto1.setFechaInicio(LocalDate.of(2025, 1, 15));
+        proyecto1.setCompletado(false);
+        
+        // Tareas con estados expandidos
+        Tarea tarea1 = new Tarea("Análisis de requerimientos", Tarea.EstadoTarea.COMPLETADA);
+        tarea1.setDescripcion("Reunión con stakeholders y documentación de requisitos");
+        
+        Tarea tarea2 = new Tarea("Diseño de base de datos", Tarea.EstadoTarea.COMPLETADA);
+        tarea2.setDescripcion("Diseño del modelo entidad-relación y optimización");
+        
+        Tarea tarea3 = new Tarea("Desarrollo API REST", Tarea.EstadoTarea.EN_PROGRESO);
+        tarea3.setDescripcion("Implementación de endpoints para CRUD de productos");
+        
+        Tarea tarea4 = new Tarea("Desarrollo Frontend", Tarea.EstadoTarea.PENDIENTE);
+        tarea4.setDescripcion("Interface React para gestión visual del inventario");
+        
+        Tarea tarea5 = new Tarea("Testing unitario", Tarea.EstadoTarea.PENDIENTE);
+        tarea5.setDescripcion("Crear suite de tests para todas las funcionalidades");
+        
+        proyecto1.setTareas(Arrays.asList(tarea1, tarea2, tarea3, tarea4, tarea5));
+        proyectos.add(proyectoService.crearProyecto(proyecto1));
+        
+        // Proyecto 2: App Mobile Delivery
+        Proyecto proyecto2 = new Proyecto();
+        proyecto2.setNombre("App Mobile para Delivery");
+        proyecto2.setDescripcion("Aplicación móvil nativa para pedidos de comida con geolocalización y pagos");
+        proyecto2.setEmpleadoId(2L);
+        proyecto2.setFechaInicio(LocalDate.of(2025, 2, 1));
+        proyecto2.setCompletado(false);
+        
+        Tarea tarea6 = new Tarea("Wireframes y mockups", Tarea.EstadoTarea.COMPLETADA);
+        tarea6.setDescripcion("Diseño UX/UI completo de todas las pantallas");
+        
+        Tarea tarea7 = new Tarea("Integración API pagos", Tarea.EstadoTarea.EN_REVISION);
+        tarea7.setDescripcion("Integración con Stripe y PayPal para pagos seguros");
+        
+        Tarea tarea8 = new Tarea("Módulo geolocalización", Tarea.EstadoTarea.EN_PROGRESO);
+        tarea8.setDescripcion("Implementar tracking en tiempo real del delivery");
+        
+        Tarea tarea9 = new Tarea("Testing en dispositivos", Tarea.EstadoTarea.PENDIENTE);
+        tarea9.setDescripcion("Pruebas en iOS y Android con diferentes resoluciones");
+        
+        proyecto2.setTareas(Arrays.asList(tarea6, tarea7, tarea8, tarea9));
+        proyectos.add(proyectoService.crearProyecto(proyecto2));
+        
+        // Proyecto 3: Dashboard Analytics (con algunas tareas canceladas)
+        Proyecto proyecto3 = new Proyecto();
+        proyecto3.setNombre("Dashboard de Analytics");
+        proyecto3.setDescripcion("Panel de control ejecutivo con métricas de negocio y visualizaciones interactivas");
+        proyecto3.setEmpleadoId(3L);
+        proyecto3.setFechaInicio(LocalDate.of(2025, 1, 10));
+        proyecto3.setCompletado(true);
+        
+        Tarea tarea10 = new Tarea("Conectores base de datos", Tarea.EstadoTarea.COMPLETADA);
+        tarea10.setDescripcion("Conexión con múltiples fuentes: MySQL, MongoDB, PostgreSQL");
+        
+        Tarea tarea11 = new Tarea("Visualizaciones Chart.js", Tarea.EstadoTarea.COMPLETADA);
+        tarea11.setDescripcion("Gráficos interactivos con filtros y drill-down");
+        
+        Tarea tarea12 = new Tarea("Sistema de alertas", Tarea.EstadoTarea.COMPLETADA);
+        tarea12.setDescripcion("Notificaciones automáticas por email y push");
+        
+        Tarea tarea13 = new Tarea("Integración con BI tools", Tarea.EstadoTarea.CANCELADA);
+        tarea13.setDescripcion("Conector con Tableau - Cancelado por cambio de prioridades");
+        
+        Tarea tarea14 = new Tarea("Export PDF/Excel", Tarea.EstadoTarea.COMPLETADA);
+        tarea14.setDescripcion("Generación automática de reportes ejecutivos");
+        
+        proyecto3.setTareas(Arrays.asList(tarea10, tarea11, tarea12, tarea13, tarea14));
+        proyectos.add(proyectoService.crearProyecto(proyecto3));
+        
+        // Proyecto 4: E-commerce B2B
+        Proyecto proyecto4 = new Proyecto();
+        proyecto4.setNombre("Plataforma E-commerce B2B");
+        proyecto4.setDescripcion("Marketplace para empresas con catálogo masivo, cotizaciones y facturación automática");
+        proyecto4.setEmpleadoId(4L);
+        proyecto4.setFechaInicio(LocalDate.of(2025, 3, 1));
+        proyecto4.setCompletado(false);
+        
+        Tarea tarea15 = new Tarea("Arquitectura microservicios", Tarea.EstadoTarea.EN_REVISION);
+        tarea15.setDescripcion("Diseño de arquitectura escalable con Docker y Kubernetes");
+        
+        Tarea tarea16 = new Tarea("Catálogo de productos", Tarea.EstadoTarea.EN_PROGRESO);
+        tarea16.setDescripcion("Sistema de búsqueda avanzada con Elasticsearch");
+        
+        Tarea tarea17 = new Tarea("Portal de proveedores", Tarea.EstadoTarea.PENDIENTE);
+        tarea17.setDescripcion("Panel para que proveedores gestionen sus productos");
+        
+        Tarea tarea18 = new Tarea("Integración ERP", Tarea.EstadoTarea.PENDIENTE);
+        tarea18.setDescripcion("Sincronización con SAP y otros sistemas empresariales");
+        
+        proyecto4.setTareas(Arrays.asList(tarea15, tarea16, tarea17, tarea18));
+        proyectos.add(proyectoService.crearProyecto(proyecto4));
+        
+        return proyectos;
+    }
+
+    /**
+     * Página para actualizar proyectos con tareas de ejemplo
+     */
+    @GetMapping("/actualizar-tareas")
+    public String mostrarPaginaActualizar() {
+        return "actualizar-tareas";
+    }
+
+    /**
+     * Endpoint temporal para actualizar proyectos existentes con tareas de ejemplo
+     * URL: /proyectos/actualizar-tareas-existentes
+     */
+    @PostMapping("/actualizar-tareas-existentes")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> actualizarTareasExistentes() {
+        try {
+            List<Proyecto> proyectosExistentes = proyectoService.obtenerTodosProyectos();
+            int proyectosActualizados = 0;
+            
+            for (Proyecto proyecto : proyectosExistentes) {
+                // Solo actualizar proyectos que no tienen tareas o tienen pocas tareas
+                if (proyecto.getTareas() == null || proyecto.getTotalTareas() < 2) {
+                    List<Tarea> nuevasTareas = crearTareasEjemplo(proyecto.getNombre());
+                    proyecto.setTareas(nuevasTareas);
+                    proyectoService.actualizarProyecto(proyecto.getId(), proyecto);
+                    proyectosActualizados++;
+                }
+            }
+            
+            return ResponseEntity.ok(Map.of(
+                "message", "Proyectos actualizados con tareas de ejemplo",
+                "proyectosActualizados", proyectosActualizados,
+                "totalProyectos", proyectosExistentes.size()
+            ));
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of(
+                "error", "Error al actualizar proyectos: " + e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Crear tareas de ejemplo basadas en el nombre del proyecto
+     */
+    private List<Tarea> crearTareasEjemplo(String nombreProyecto) {
+        List<Tarea> tareas = new ArrayList<>();
+        
+        if (nombreProyecto != null && nombreProyecto.toLowerCase().contains("api")) {
+            // Tareas para proyectos de API
+            Tarea tarea1 = new Tarea("Diseño de endpoints", Tarea.EstadoTarea.COMPLETADA);
+            tarea1.setDescripcion("Definir estructura y documentación de APIs");
+            
+            Tarea tarea2 = new Tarea("Implementación CRUD", Tarea.EstadoTarea.EN_PROGRESO);
+            tarea2.setDescripcion("Desarrollo de operaciones Create, Read, Update, Delete");
+            
+            Tarea tarea3 = new Tarea("Testing de integración", Tarea.EstadoTarea.PENDIENTE);
+            tarea3.setDescripcion("Pruebas automatizadas de endpoints");
+            
+            Tarea tarea4 = new Tarea("Documentación Swagger", Tarea.EstadoTarea.EN_REVISION);
+            tarea4.setDescripcion("Generar documentación interactiva de API");
+            
+            tareas.addAll(Arrays.asList(tarea1, tarea2, tarea3, tarea4));
+            
+        } else if (nombreProyecto != null && nombreProyecto.toLowerCase().contains("inventario")) {
+            // Tareas para proyectos de inventario
+            Tarea tarea1 = new Tarea("Modelo de datos", Tarea.EstadoTarea.COMPLETADA);
+            tarea1.setDescripcion("Diseño de entidades y relaciones");
+            
+            Tarea tarea2 = new Tarea("Módulo de productos", Tarea.EstadoTarea.COMPLETADA);
+            tarea2.setDescripcion("Gestión completa de catálogo de productos");
+            
+            Tarea tarea3 = new Tarea("Control de stock", Tarea.EstadoTarea.EN_PROGRESO);
+            tarea3.setDescripcion("Sistema de entrada y salida de inventario");
+            
+            Tarea tarea4 = new Tarea("Reportes automáticos", Tarea.EstadoTarea.PENDIENTE);
+            tarea4.setDescripcion("Generación de reportes de stock y movimientos");
+            
+            Tarea tarea5 = new Tarea("Alertas de stock bajo", Tarea.EstadoTarea.EN_REVISION);
+            tarea5.setDescripcion("Notificaciones automáticas cuando el stock es bajo");
+            
+            tareas.addAll(Arrays.asList(tarea1, tarea2, tarea3, tarea4, tarea5));
+            
+        } else {
+            // Tareas genéricas para cualquier proyecto
+            Tarea tarea1 = new Tarea("Planificación inicial", Tarea.EstadoTarea.COMPLETADA);
+            tarea1.setDescripcion("Análisis de requerimientos y planificación");
+            
+            Tarea tarea2 = new Tarea("Desarrollo principal", Tarea.EstadoTarea.EN_PROGRESO);
+            tarea2.setDescripcion("Implementación de funcionalidades core");
+            
+            Tarea tarea3 = new Tarea("Testing y validación", Tarea.EstadoTarea.PENDIENTE);
+            tarea3.setDescripcion("Pruebas exhaustivas del sistema");
+            
+            Tarea tarea4 = new Tarea("Revisión de código", Tarea.EstadoTarea.EN_REVISION);
+            tarea4.setDescripcion("Code review y optimizaciones");
+            
+            Tarea tarea5 = new Tarea("Documentación", Tarea.EstadoTarea.CANCELADA);
+            tarea5.setDescripcion("Documentación técnica - Pospuesta para siguiente fase");
+            
+            tareas.addAll(Arrays.asList(tarea1, tarea2, tarea3, tarea4, tarea5));
+        }
+        
+        return tareas;
     }
 }

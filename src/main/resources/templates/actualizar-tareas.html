@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 Actualizar Tareas - Demo Mixto</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #D2691E 0%, #CD853F 25%, #DEB887 50%, #F4A460 75%, #DAA520 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, #3498db, #2980b9); 
+            color: white; 
+        }
+        .btn-success { 
+            background: linear-gradient(135deg, #2ecc71, #27ae60); 
+            color: white; 
+        }
+        .btn-warning { 
+            background: linear-gradient(135deg, #f39c12, #e67e22); 
+            color: white; 
+        }
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            display: none;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Actualizar Proyectos con Estados de Tareas</h1>
+        
+        <div class="info-box">
+            <h3>📋 ¿Para qué sirve esta función?</h3>
+            <p>Esta herramienta actualiza los proyectos existentes para agregar <strong>tareas de ejemplo</strong> con los nuevos estados expandidos:</p>
+            <ul>
+                <li>⏳ <strong>PENDIENTE</strong> - Tareas sin iniciar</li>
+                <li>🔄 <strong>EN_PROGRESO</strong> - Tareas en desarrollo activo</li>
+                <li>👀 <strong>EN_REVISION</strong> - Tareas esperando aprobación</li>
+                <li>✅ <strong>COMPLETADA</strong> - Tareas finalizadas exitosamente</li>
+                <li>❌ <strong>CANCELADA</strong> - Tareas descontinuadas</li>
+            </ul>
+            <p><strong>Nota:</strong> Solo se actualizarán proyectos que actualmente no tienen tareas o tienen menos de 2 tareas.</p>
+        </div>
+
+        <div class="alert alert-success" id="successAlert">
+            <strong>✅ ¡Éxito!</strong> <span id="successMessage"></span>
+        </div>
+
+        <div class="alert alert-error" id="errorAlert">
+            <strong>❌ Error:</strong> <span id="errorMessage"></span>
+        </div>
+
+        <div class="loading" id="loadingDiv">
+            <div class="spinner"></div>
+            <p>Actualizando proyectos con tareas de ejemplo...</p>
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-success" onclick="actualizarTareas()">
+                🚀 Actualizar Proyectos con Tareas de Ejemplo
+            </button>
+            
+            <a href="/proyectos" class="btn btn-primary">
+                📋 Ver Lista de Proyectos
+            </a>
+            
+            <a href="/proyectos/crear-datos-ejemplo" class="btn btn-warning">
+                🗂️ Crear Proyectos de Ejemplo Completos
+            </a>
+        </div>
+
+        <div class="info-box" style="margin-top: 30px;">
+            <h4>📖 Instrucciones:</h4>
+            <ol>
+                <li>Haz clic en <strong>"Actualizar Proyectos con Tareas de Ejemplo"</strong></li>
+                <li>Espera a que se complete la actualización</li>
+                <li>Ve a <strong>"Ver Lista de Proyectos"</strong> para ver los nuevos estados</li>
+                <li>Edita cualquier proyecto para probar la gestión de estados</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        async function actualizarTareas() {
+            // Mostrar loading
+            document.getElementById('loadingDiv').style.display = 'block';
+            document.getElementById('successAlert').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
+            
+            try {
+                const response = await fetch('/proyectos/actualizar-tareas-existentes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                // Ocultar loading
+                document.getElementById('loadingDiv').style.display = 'none';
+                
+                if (response.ok) {
+                    // Mostrar éxito
+                    document.getElementById('successMessage').textContent = 
+                        `Se actualizaron ${data.proyectosActualizados} de ${data.totalProyectos} proyectos con tareas de ejemplo.`;
+                    document.getElementById('successAlert').style.display = 'block';
+                    
+                    // Redirigir después de 3 segundos
+                    setTimeout(() => {
+                        window.location.href = '/proyectos';
+                    }, 3000);
+                } else {
+                    // Mostrar error
+                    document.getElementById('errorMessage').textContent = data.error || 'Error desconocido';
+                    document.getElementById('errorAlert').style.display = 'block';
+                }
+            } catch (error) {
+                // Ocultar loading
+                document.getElementById('loadingDiv').style.display = 'none';
+                
+                // Mostrar error
+                document.getElementById('errorMessage').textContent = 'Error de conexión: ' + error.message;
+                document.getElementById('errorAlert').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

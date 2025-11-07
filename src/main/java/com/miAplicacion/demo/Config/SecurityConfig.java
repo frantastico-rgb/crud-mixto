@@ -47,10 +47,14 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST
             .authorizeHttpRequests((requests) -> requests
+                // Permitir acceso sin autenticar a la página de login
+                .requestMatchers("/login", "/login?error=true").permitAll()
                 // Permitir acceso sin autenticar a la ruta de Proyectos MVC (ejemplo de ruta pública)
                 .requestMatchers("/proyectos/**").permitAll() 
                 // Permitir acceso sin autenticar a la API REST de Proyectos
                 .requestMatchers("/api/proyectos/**").permitAll()
+                // Permitir acceso a la página principal
+                .requestMatchers("/", "/home").permitAll()
                 // Requerir rol 'ADMIN' para todas las operaciones MVC en /empleados
                 .requestMatchers("/empleados/**").hasRole("ADMIN") 
                 // Requerir rol 'ADMIN' para todas las operaciones REST API en /api/empleados
@@ -58,8 +62,19 @@ public class SecurityConfig {
                 // Todas las demás peticiones requieren autenticación
                 .anyRequest().authenticated() 
             )
-            .httpBasic(org.springframework.security.config.Customizer.withDefaults()); // Usa autenticación Basic (Username/Password)
-            // .formLogin(org.springframework.security.config.Customizer.withDefaults()); // Opcional: Para usar la página de login por defecto
+            .httpBasic(org.springframework.security.config.Customizer.withDefaults()) // HTTP Basic para APIs
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/empleados", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/proyectos")
+                .permitAll()
+            );
 
         return http.build();
     }
