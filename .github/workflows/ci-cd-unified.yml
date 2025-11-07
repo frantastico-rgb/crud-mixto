@@ -1,0 +1,330 @@
+# 🚀 CI/CD Pipeline Unificado para DemoMixto
+# Combina testing rápido con railway + testing completo con servicios externos
+# Deploy configurado para Render con Railway como backup
+
+name: 🔄 CI/CD Unified Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  JAVA_VERSION: '17'
+  MAVEN_OPTS: '-Xmx1024m'
+
+jobs:
+  # 🧪 TESTING RÁPIDO - Para PRs y desarrollo
+  quick-test:
+    name: 🧪 Quick Tests (Railway Profile)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: ☕ Setup Java 17 with Maven cache
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: maven
+
+    - name: 🧪 Run Quick Tests with Railway Profile
+      run: |
+        ./mvnw -B -ntp clean test -Dspring.profiles.active=railway
+        echo "✅ Quick tests completados con Railway profile"
+
+    - name: 📊 Upload Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: quick-test-results
+        path: target/surefire-reports/
+        retention-days: 7
+
+  # 🔍 TESTING COMPLETO - Para main branch y releases
+  comprehensive-test:
+    name: 🔍 Comprehensive Tests & Quality
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'push'
+    
+    services:
+      # 🗄️ MySQL para tests de integración
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpassword
+          MYSQL_DATABASE: empresa_test
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping -h localhost -u testuser -ptestpassword" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      # 🍃 MongoDB para tests de integración
+      mongodb:
+        image: mongo:7.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: testuser
+          MONGO_INITDB_ROOT_PASSWORD: testpassword
+          MONGO_INITDB_DATABASE: empresa_test
+        ports:
+          - 27017:27017
+        options: --health-cmd="mongosh --eval 'db.runCommand(\"ping\")'" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: ☕ Setup Java 17 with Maven cache
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: maven
+
+    - name: 📦 Cache Maven Dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: 🧪 Run Unit Tests
+      run: |
+        ./mvnw -B clean test -Dspring.profiles.active=test
+        echo "✅ Tests unitarios completados"
+
+    - name: 🔗 Run Integration Tests
+      env:
+        SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/empresa_test
+        SPRING_DATASOURCE_USERNAME: testuser
+        SPRING_DATASOURCE_PASSWORD: testpassword
+        SPRING_DATA_MONGODB_URI: mongodb://testuser:testpassword@localhost:27017/empresa_test?authSource=admin
+      run: |
+        ./mvnw -B verify -Dspring.profiles.active=integration-test
+        echo "✅ Tests de integración completados"
+
+    - name: 📊 Generate Test Coverage Report
+      run: |
+        ./mvnw jacoco:report
+        echo "📊 Reporte de cobertura generado"
+
+    - name: 📈 Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./target/site/jacoco/jacoco.xml
+        flags: unittests
+        name: demomixto-coverage
+        fail_ci_if_error: false
+
+    - name: 🔍 SonarQube Code Analysis
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        if [ "$SONAR_TOKEN" != "" ]; then
+          ./mvnw sonar:sonar \
+            -Dsonar.projectKey=frantastico-rgb_crud-mixto \
+            -Dsonar.organization=frantastico-rgb \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=$SONAR_TOKEN
+          echo "🔍 Análisis SonarQube completado"
+        else
+          echo "⚠️ SONAR_TOKEN no configurado, saltando análisis"
+        fi
+
+    - name: 📤 Upload Comprehensive Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: comprehensive-test-results
+        path: |
+          target/surefire-reports/
+          target/site/jacoco/
+        retention-days: 30
+
+  # 📦 BUILD Y PACKAGING
+  build:
+    name: 📦 Build Application
+    runs-on: ubuntu-latest
+    needs: [comprehensive-test]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: ☕ Setup Java 17 with Maven cache
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: maven
+
+    - name: 🏗️ Build JAR
+      run: |
+        ./mvnw -B clean package -DskipTests
+        echo "📦 Build completado exitosamente"
+
+    - name: 📤 Upload JAR Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: demomixto-jar
+        path: target/*.jar
+        retention-days: 30
+
+  # 🐳 DOCKER BUILD
+  docker-build:
+    name: 🐳 Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [comprehensive-test, build]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 🔐 Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: 🐳 Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: |
+          frantasticodev/demomixto:latest
+          frantasticodev/demomixto:${{ github.sha }}
+          frantasticodev/demomixto:${{ github.run_number }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  # 🎯 DEPLOYMENT A RENDER (PRINCIPAL)
+  deploy-render:
+    name: 🎯 Deploy to Render
+    runs-on: ubuntu-latest
+    needs: [comprehensive-test, build, docker-build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    environment:
+      name: production
+      url: https://demomixto.onrender.com
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 📥 Download JAR Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: demomixto-jar
+        path: target/
+
+    - name: 🎯 Deploy to Render via Docker
+      env:
+        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+      run: |
+        if [ "$RENDER_API_KEY" != "" ]; then
+          # Trigger Render deployment via API
+          curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "clearCache": false
+            }'
+          echo "🎯 Render deployment triggered"
+        else
+          echo "⚠️ RENDER_API_KEY no configurado"
+          echo "📋 Para deployment manual:"
+          echo "1. Conectar Render a este repositorio"
+          echo "2. Configurar Docker build"
+          echo "3. Variables de entorno para producción"
+        fi
+
+    - name: 🔔 Notify Render Deployment Success
+      if: success()
+      run: |
+        echo "✅ Deployment a Render exitoso"
+        echo "🌐 URL: https://demomixto.onrender.com"
+        echo "🐳 Docker image: frantasticodev/demomixto:${{ github.sha }}"
+
+  # 🚄 RAILWAY DEPLOYMENT (INACTIVO - Solo con trigger manual)
+  deploy-railway-backup:
+    name: 🚄 Deploy to Railway (Backup - Manual Only)
+    runs-on: ubuntu-latest
+    needs: [comprehensive-test, build]
+    # Solo se activa con commit message específico: [deploy-railway]
+    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[deploy-railway]')
+    
+    environment:
+      name: railway-backup
+      url: https://demomixto.up.railway.app
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🚄 Deploy to Railway (Manual Trigger)
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      run: |
+        if [ "$RAILWAY_TOKEN" != "" ]; then
+          # Install Railway CLI
+          npm install -g @railway/cli
+          
+          # Deploy to Railway
+          railway deploy --service=${{ secrets.RAILWAY_SERVICE_ID || 'demomixto' }}
+          echo "🚄 Railway deployment completado (manual trigger)"
+        else
+          echo "⚠️ RAILWAY_TOKEN no configurado"
+          echo "📋 Railway está configurado como backup inactivo"
+          echo "🔧 Para activar: agregar '[deploy-railway]' al commit message"
+        fi
+
+    - name: 🔔 Notify Railway Deployment Success
+      if: success()
+      run: |
+        echo "✅ Railway backup deployment exitoso"
+        echo "🌐 URL: https://demomixto.up.railway.app"
+
+  # 📊 REPORTES Y NOTIFICACIONES FINALES
+  notify:
+    name: 📊 Pipeline Status Report
+    runs-on: ubuntu-latest
+    needs: [quick-test, comprehensive-test, build, deploy-render]
+    if: always()
+
+    steps:
+    - name: 📊 Generate Pipeline Report
+      run: |
+        echo "📊 REPORTE PIPELINE CI/CD UNIFICADO"
+        echo "===================================="
+        echo "🧪 Quick Tests: ${{ needs.quick-test.result || 'N/A (no PR)' }}"
+        echo "🔍 Comprehensive Tests: ${{ needs.comprehensive-test.result }}"
+        echo "📦 Build: ${{ needs.build.result }}"
+        echo "🎯 Render Deploy: ${{ needs.deploy-render.result }}"
+        echo "⏰ Timestamp: $(date)"
+        echo "🔗 Commit: ${{ github.sha }}"
+        echo "👤 Author: ${{ github.actor }}"
+        echo "🌟 Branch: ${{ github.ref_name }}"
+        echo ""
+        echo "🎯 Production URL: https://demomixto.onrender.com"
+        echo "🚄 Railway Backup: https://demomixto.up.railway.app (inactivo)"
+        echo "🐳 Docker Image: frantasticodev/demomixto:${{ github.sha }}"
+
+    - name: 📈 Status Badge Info
+      run: |
+        echo "📋 Para agregar badges al README:"
+        echo "[![CI/CD](https://github.com/frantastico-rgb/crud-mixto/actions/workflows/ci-cd-unified.yml/badge.svg)](https://github.com/frantastico-rgb/crud-mixto/actions/workflows/ci-cd-unified.yml)"
