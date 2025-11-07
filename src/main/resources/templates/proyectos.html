@@ -64,6 +64,7 @@
         td {
             padding: 12px;
             border-bottom: 1px solid #f1f2f6;
+            vertical-align: top;
         }
         tr:hover {
             background-color: #f8f9fa;
@@ -73,14 +74,56 @@
             border-radius: 15px;
             font-size: 12px;
             font-weight: 500;
+            margin: 2px;
         }
-        .badge.completed {
+        .badge.completed, .badge.completada {
             background-color: #d4edda;
             color: #155724;
         }
-        .badge.in-progress {
+        .badge.in-progress, .badge.en-progreso {
             background-color: #fff3cd;
             color: #856404;
+        }
+        .badge.pendiente {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .badge.revision, .badge.en-revision {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .badge.cancelada {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+        .task-list {
+            max-height: 120px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 8px;
+            background: #f8f9fa;
+            margin-top: 5px;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 13px;
+        }
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        .task-title {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .stats-summary {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -98,21 +141,62 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
+                    <th>Nombre del Proyecto</th>
                     <th>Descripción</th>
-                    <th>Estado</th>
+                    <th>Tareas y Estados</th>
+                    <th>Estado General</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="proyecto : ${proyectos}">
                     <td th:text="${proyecto.id}">ID</td>
-                    <td th:text="${proyecto.nombre}">Nombre</td>
-                    <td th:text="${proyecto.descripcion}">Descripción</td>
+                    <td>
+                        <strong th:text="${proyecto.nombre}">Nombre</strong>
+                        <div class="stats-summary" th:if="${proyecto.tareas != null}">
+                            📋 <span th:text="${#lists.size(proyecto.tareas)}">0</span> tareas total
+                        </div>
+                    </td>
+                    <td>
+                        <div th:text="${#strings.abbreviate(proyecto.descripcion, 100)}">Descripción</div>
+                        <div class="stats-summary">
+                            👤 Empleado ID: <span th:text="${proyecto.empleadoId ?: 'Sin asignar'}">-</span>
+                        </div>
+                    </td>
+                    <td>
+                        <!-- Mostrar tareas individuales con sus estados -->
+                        <div th:if="${proyecto.tareas != null and not #lists.isEmpty(proyecto.tareas)}" class="task-list">
+                            <div th:each="tarea, iterStat : ${proyecto.tareas}" class="task-item">
+                                <div class="task-title" th:text="${tarea.titulo}">Título de tarea</div>
+                                <span class="badge" 
+                                      th:class="'badge ' + (${tarea.estado?.name()?.toLowerCase()?.replace('_', '-')} ?: 'pendiente')" 
+                                      th:text="${tarea.estado?.name() == 'PENDIENTE' ? '⏳ Pendiente' : 
+                                               (tarea.estado?.name() == 'EN_PROGRESO' ? '🔄 En Progreso' :
+                                               (tarea.estado?.name() == 'EN_REVISION' ? '👀 En Revisión' :
+                                               (tarea.estado?.name() == 'COMPLETADA' ? '✅ Completada' :
+                                               (tarea.estado?.name() == 'CANCELADA' ? '❌ Cancelada' : '⏳ Pendiente'))))}">
+                                    Estado
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Resumen de estados de tareas -->
+                        <div th:if="${proyecto.tareas != null and not #lists.isEmpty(proyecto.tareas)}" class="stats-summary">
+                            <span th:if="${proyecto.tareasCompletadas != null and proyecto.totalTareas != null}">
+                                ✅ <span th:text="${proyecto.tareasCompletadas}">0</span>/<span th:text="${proyecto.totalTareas}">0</span> completadas
+                            </span>
+                        </div>
+                        
+                        <!-- Mensaje si no hay tareas -->
+                        <div th:if="${proyecto.tareas == null or #lists.isEmpty(proyecto.tareas)}" 
+                             style="color: #6c757d; font-style: italic; font-size: 13px;">
+                            📝 Sin tareas definidas
+                        </div>
+                    </td>
                     <td>
                         <span class="badge" 
                               th:class="'badge ' + (${proyecto.completado} ? 'completed' : 'in-progress')" 
-                              th:text="${proyecto.completado} ? 'Completado' : 'En Progreso'">Estado</span>
+                              th:text="${proyecto.completado} ? '🎯 Completado' : '🔄 En Progreso'">Estado</span>
                     </td>
                     <td>
                         <a th:href="@{/proyectos/editar/{id}(id=${proyecto.id})}" 
@@ -121,7 +205,7 @@
                               method="post" style="display: inline-block;">
                             <button type="submit" 
                                     class="btn btn-warning" 
-                                    onclick="return confirm('¿Eliminar este proyecto?')">🗑️ Eliminar</button>
+                                    onclick="return confirm('¿Eliminar este proyecto y todas sus tareas?')">🗑️ Eliminar</button>
                         </form>
                     </td>
                 </tr>
